@@ -1,0 +1,39 @@
+package skill.project.model;
+
+import lombok.Data;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+@Data
+@Entity
+@Table(name = "users")
+public class UserModel {
+  @Id
+  @NotNull
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  Integer id;
+
+  @Column(name = "is_moderator")
+  boolean moderator;
+
+  @NotNull
+  @Column(name = "reg_time")
+  LocalDateTime regTime;
+
+  @NotNull
+  String name;
+
+  @NotNull
+  String email;
+
+  @NotNull
+  String password;
+
+  String code;
+
+  @Column(name = "photo")
+  String photoUrl;
+
+}

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DF_DB_NAME}
+    username: postgre
+    password: 12345678
+
+  jpa:
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG94Dialect
+    show-sql: true
