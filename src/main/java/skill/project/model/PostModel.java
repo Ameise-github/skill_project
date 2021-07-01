@@ -24,9 +24,8 @@ public class PostModel {
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "moderation_status",columnDefinition = "moderation_status_enum default NEW")
-  @ColumnTransformer(read = "state::varchar", write = "?::moderation_status_enum")
-  ModeratorEnum moderationStatus;
+  @Column(name = "moderation_status")
+  ModeratorEnum moderationStatus = ModeratorEnum.NEW;
 
   @Column(name = "moderator_id")
   Integer moderatorId;

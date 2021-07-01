@@ -1,9 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/${DF_DB_NAME}
-    username: postgre
+    url: jdbc:postgresql://localhost:5434/tasks
+    username: postgres
     password: 12345678
 
   jpa:
-    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG94Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+    hibernate:
+          ddl-auto: update
