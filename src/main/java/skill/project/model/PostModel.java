@@ -1,7 +1,6 @@
 package skill.project.model;
 
 import lombok.Data;
-import org.hibernate.annotations.ColumnTransformer;
 import skill.project.enums.ModeratorEnum;
 
 import javax.persistence.*;
