@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "captcha_codes")
-public class CaptchaCodeModel {
+public class CaptchaCode {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;

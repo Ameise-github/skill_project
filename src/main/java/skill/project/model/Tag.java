@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @Table(name = "tags")
-public class TagModel {
+public class Tag {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;

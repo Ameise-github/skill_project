@@ -3,5 +3,5 @@ package skill.project.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ApiPostController {
+public class GeneralController {
 }

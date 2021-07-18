@@ -11,18 +11,20 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "post_votes")
 @Check(constraints = "value = 1 or value = -1")
-public class PostVotesModel {
+public class PostVotes {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;
 
   @NotNull
-  @Column(name = "user_id")
-  int userId;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  User user;
 
   @NotNull
-  @Column(name = "post_id")
-  int postId;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  Post post;
 
   @Column(name = "time")
   LocalDateTime timeCreate;

@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "global_settings")
-public class GlobalSettingsModel {
+public class GlobalSettings {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;

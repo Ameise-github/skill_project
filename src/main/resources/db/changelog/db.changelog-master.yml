@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create/db.changelog-create-db.yaml
+  - includeAll:
+      path: db/changelog/data/
