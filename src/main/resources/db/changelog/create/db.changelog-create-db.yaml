@@ -1,0 +1,305 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/create/db.changelog-create-db.yaml
+  - changeSet:
+      id: 1
+      author: alexa
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pk
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(600)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_moderator
+                  type: boolean
+              - column:
+                  name: reg_time
+                  type: datetime
+              - column:
+                  name: email
+                  type: varchar(50)
+              - column:
+                  name: code
+                  type: varchar(50)
+              - column:
+                  name: photo
+                  type: varchar(200)
+
+  - changeSet:
+      id: 2
+      author: alexa
+      changes:
+        - createTable:
+            tableName: captcha_codes
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: captcha_codes_pk
+                    nullable: false
+              - column:
+                  name: time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: secret_code
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 3
+      author: alexa
+      changes:
+        - createTable:
+            tableName: global_settings
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: global_settings_pk
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(200)
+              - column:
+                  name: name
+                  type: varchar(200)
+              - column:
+                  name: value
+                  type: varchar(200)
+
+  - changeSet:
+      id: 4
+      author: alexa
+      changes:
+        - createTable:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: tag_pk
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(200)
+
+  - changeSet:
+      id: 5
+      author: alexa
+      changes:
+        - createTable:
+            tableName: posts
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: post_pk
+                    nullable: false
+              - column:
+                  name: moderation_status
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: moderator_id
+                  type: integer
+              - column:
+                  name: user_id
+                  type: integer
+              - column:
+                  name: is_active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(100)
+              - column:
+                  name: text
+                  type: varchar(800)
+              - column:
+                  name: viewCount
+                  type: integer
+        - addForeignKeyConstraint:
+            baseTableName: posts
+            baseColumnNames: moderator_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: user_moderator_fk
+        - addForeignKeyConstraint:
+            baseTableName: posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: user_author_fk
+
+
+  - changeSet:
+      id: 6
+      author: alexa
+      changes:
+        - createTable:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: post_comments_pk
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: integer
+              - column:
+                  name: post_id
+                  type: integer
+              - column:
+                  name: user_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(800)
+        - addForeignKeyConstraint:
+            baseTableName: post_comments
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: post_comment_fk
+        - addForeignKeyConstraint:
+            baseTableName: post_comments
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: user_author_comment_fk
+
+  - changeSet:
+      id: 7
+      author: alexa
+      changes:
+        - createTable:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: post_votes_pk
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: integer
+              - column:
+                  name: user_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: datetime
+              - column:
+                  name: value
+                  type: integer
+#        - addCheckConstraint:
+#            constraintBody: value=1 or value=-1
+#            constraintName: check_value_post_votes
+#            schemaName: tasks
+#            tableName: post_votes
+#            validate: true
+        - addForeignKeyConstraint:
+            baseTableName: post_votes
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: post_votes_fk
+        - addForeignKeyConstraint:
+            baseTableName: post_votes
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: user_post_votes_fk
+
+  - changeSet:
+      id: 8
+      author: alexa
+      changes:
+        - createTable:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: tag2post_pk
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: integer
+              - column:
+                  name: tag_id
+                  type: integer
+        - addForeignKeyConstraint:
+            baseTableName: tag2post
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: tag2post_post_fk
+        - addForeignKeyConstraint:
+            baseTableName: tag2post
+            baseColumnNames: tag_id
+            referencedTableName: tags
+            referencedColumnNames: id
+            constraintName: tag2post_tag_fk

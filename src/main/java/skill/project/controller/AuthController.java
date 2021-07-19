@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import skill.project.dto.response.AuthCheckResponse;
 
 @RestController
+public class AuthController {
 @RequestMapping("/auth")
 public class ApiAuthController {
 

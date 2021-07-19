@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ApiGeneralController {
-
-
+public class PostController {
   @GetMapping("/init")
   public ResponseEntity<?> getInit() {
 

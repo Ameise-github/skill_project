@@ -1,14 +1,21 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/tasks
-    username: postgres
+    url: jdbc:mysql://localhost:3306/tasks?createDatabaseIfNotExist=true&characterEncoding=UTF-8&serverTimezone=UTC
+#    url: jdbc:postgresql://localhost:5432/tasks
+    username: root
     password: 12345678
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
           ddl-auto: update
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
+
 server:
   servlet:
     context-path: /api
+      ddl-auto: none

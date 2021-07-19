@@ -9,7 +9,7 @@ import skill.project.enums.ModeType;
 
 @RestController
 @RequestMapping("/post")
-public class ApiPostController {
+public class GeneralController {
 
   @GetMapping
   public ResponseEntity<?> getPost(@RequestParam ModeType mode,

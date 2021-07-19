@@ -1,4 +1,4 @@
-package skill.project.enums;
+package skill.project.model.enums;
 
 public enum ModeratorEnum {
   NEW,

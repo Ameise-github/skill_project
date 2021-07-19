@@ -1,0 +1,227 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/data/db.primary_data.yaml
+  - changeSet:
+      id: data_1
+      author: alexa
+      comment: "Create users"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: "user 1"
+              - column:
+                  name: password
+                  value: "12345678"
+              - column:
+                  name: is_moderator
+                  value: "false"
+              - column:
+                  name: reg_time
+                  value: "now()"
+              - column:
+                  name: email
+                  value: "user_1@mail.ru"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: "user 2"
+              - column:
+                  name: password
+                  value: "1029384756"
+              - column:
+                  name: is_moderator
+                  value: "true"
+              - column:
+                  name: reg_time
+                  value: "now()"
+              - column:
+                  name: email
+                  value: "user_2@mail.ru"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: "user 3"
+              - column:
+                  name: password
+                  value: "000111999222"
+              - column:
+                  name: is_moderator
+                  value: "false"
+              - column:
+                  name: reg_time
+                  value: "now()"
+              - column:
+                  name: email
+                  value: "user_3@mail.ru"
+
+  - changeSet:
+      id: data_2
+      author: alexa
+      comment: "Create posts"
+      changes:
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: is_active
+                  value: "1"
+              - column:
+                  name: time
+                  valueDate: "now()"
+              - column:
+                  name: title
+                  value: "post 1"
+              - column:
+                  name: text
+                  value: "new post 1. new post now"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: is_active
+                  value: "1"
+              - column:
+                  name: time
+                  value: "now()"
+              - column:
+                  name: title
+                  value: "post 2"
+              - column:
+                  name: text
+                  value: "new post 2. new post now"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: is_active
+                  value: "1"
+              - column:
+                  name: time
+                  value: "now()"
+              - column:
+                  name: title
+                  value: "post 3"
+              - column:
+                  name: text
+                  value: "new post 3. new post now"
+
+  - changeSet:
+      id: data_3
+      author: alexa
+      comment: "Create tag"
+      changes:
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "news"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "weather"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "animal"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "dog"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "sweets"
+
+
+  - changeSet:
+      id: data_4
+      author: alexa
+      comment: "Create comments"
+      changes:
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: "1"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: time
+                  valueDate: "now() + interval '5 hours'"
+              - column:
+                  name: text
+                  value: "new comment 1 for post 1"
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "2"
+              - column:
+                  name: time
+                  valueDate: "now() + interval '10 hours'"
+              - column:
+                  name: text
+                  value: "new comment 2 for post 2"
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: time
+                  valueDate: "now() + interval '2 day'"
+              - column:
+                  name: text
+                  value: "new comment 3 for post 2"

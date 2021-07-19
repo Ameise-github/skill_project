@@ -9,23 +9,24 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "post_comments")
-public class PostCommentsModel {
+public class PostComments {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;
 
-  @Column(name = "parent_id")
-  Integer parentId;
+  @ManyToOne
+  @JoinColumn(name = "parent_id")
+  PostComments parentComment;
 
   @NotNull
   @ManyToOne
   @JoinColumn(name = "post_id")
-  PostModel post;
+  Post post;
 
   @NotNull
   @ManyToOne
   @JoinColumn(name = "user_id")
-  UserModel user;
+  User user;
 
   @NotNull
   LocalDateTime time;

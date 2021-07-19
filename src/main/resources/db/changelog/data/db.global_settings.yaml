@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/data/db.global_settings.yaml
+  - changeSet:
+      id: global_1
+      author: alexa
+      comment: "Create global settings"
+      changes:
+        - insert:
+            tableName: global_settings
+            columns:
+              - column:
+                  name: code
+                  value: "MULTIUSER_MODE"
+              - column:
+                  name: name
+                  value: "Многопользовательский режим"
+              - column:
+                  name: value
+                  value: "YES"
+        - insert:
+            tableName: global_settings
+            columns:
+              - column:
+                  name: code
+                  value: "POST_PREMODERATION"
+              - column:
+                  name: name
+                  value: "Премодерация постов"
+              - column:
+                  name: value
+                  value: "NO"
+        - insert:
+            tableName: global_settings
+            columns:
+              - column:
+                  name: code
+                  value: "STATISTICS_IS_PUBLIC"
+              - column:
+                  name: name
+                  value: "Показывать всем статистику блога"
+              - column:
+                  name: value
+                  value: "NO"
+      rollback:
+        - delete:
+            tableName: global_settings
+            where: code in ('MULTIUSER_MODE', 'POST_PREMODERATION', 'STATISTICS_IS_PUBLIC')

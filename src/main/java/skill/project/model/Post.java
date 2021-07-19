@@ -1,7 +1,7 @@
 package skill.project.model;
 
 import lombok.Data;
-import skill.project.enums.ModeratorEnum;
+import skill.project.model.enums.ModeratorEnum;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "posts")
-public class PostModel {
+public class Post {
   @Id
   @NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +26,14 @@ public class PostModel {
   @Column(name = "moderation_status")
   ModeratorEnum moderationStatus = ModeratorEnum.NEW;
 
-  @Column(name = "moderator_id")
-  Integer moderatorId;
+  @ManyToOne
+  @JoinColumn(name = "moderator_id")
+  User moderator;
 
   @NotNull
   @ManyToOne
   @JoinColumn(name = "user_id")
-  UserModel user;
+  User user;
 
   @NotNull
   @Column(name = "time")
@@ -51,5 +52,5 @@ public class PostModel {
   @JoinTable(name = "tag2post",
   joinColumns = @JoinColumn(name = "post_id"),
   inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  List<TagModel> tags;
+  List<Tag> tags;
 }
