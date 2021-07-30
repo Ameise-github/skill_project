@@ -159,7 +159,7 @@ databaseChangeLog:
                   name: text
                   type: varchar(800)
               - column:
-                  name: viewCount
+                  name: view_count
                   type: integer
         - addForeignKeyConstraint:
             baseTableName: posts

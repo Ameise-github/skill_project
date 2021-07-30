@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "post_votes")
-@Check(constraints = "value = 1 or value = -1")
+@Check(constraints = "value = 1 or value = -1") // 1 - like; -1 -- dis like
 public class PostVotes {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

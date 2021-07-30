@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/tasks?createDatabaseIfNotExist=true&characterEncoding=UTF-8&serverTimezone=UTC
-#    url: jdbc:postgresql://localhost:5432/tasks
+#    url: jdbc:postgresql://localhost:5434/tasks
     username: root
     password: 12345678
 
@@ -10,7 +10,7 @@ spring:
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-          ddl-auto: update
+          ddl-auto: none
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
@@ -18,4 +18,11 @@ spring:
 server:
   servlet:
     context-path: /api
-      ddl-auto: none
+
+blog:
+  title: "DevPub"
+  subtitle: Рассказы разработчиков
+  phone: 7 903 666-44-55
+  email: panina.Alexa5@gmail.com
+  copyright: Alex Pan
+  copyrightFrom: 2021

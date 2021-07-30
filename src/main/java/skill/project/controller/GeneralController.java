@@ -1,22 +1,36 @@
 package skill.project.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import skill.project.enums.ModeType;
+import skill.project.dto.response.InitResponse;
+import skill.project.service.GeneralService;
 
+/*Для запросов которые некуда пристроить :))) */
 @RestController
-@RequestMapping("/post")
+@RequestMapping("")
 public class GeneralController {
+  @Autowired
+  private GeneralService generalService;
+  @Autowired
+  private InitResponse initResponse;
 
-  @GetMapping
-  public ResponseEntity<?> getPost(@RequestParam ModeType mode,
-                                   @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
-                                   @RequestParam(name = "offset", defaultValue = "10", required = false) Integer limit) {
+  @GetMapping("/init")
+  public ResponseEntity<?> getInit() {
+    return ResponseEntity.ok().body(initResponse);
+  }
 
+  @GetMapping("/settings")
+  public ResponseEntity<?> getSettings() {
+    return ResponseEntity.ok().body(generalService.settingsMap());
+  }
 
-    return ResponseEntity.ok("");
+  @GetMapping("/tag")
+  public ResponseEntity<?> getTags(@RequestParam(name = "query", required = false) String query) {
+    return new ResponseEntity<>(generalService.getTags(query), HttpStatus.OK);
   }
 }

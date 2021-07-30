@@ -16,10 +16,10 @@ databaseChangeLog:
                   value: "12345678"
               - column:
                   name: is_moderator
-                  value: "false"
+                  valueBoolean: false
               - column:
                   name: reg_time
-                  value: "now()"
+                  valueDate: "now()"
               - column:
                   name: email
                   value: "user_1@mail.ru"
@@ -34,10 +34,10 @@ databaseChangeLog:
                   value: "1029384756"
               - column:
                   name: is_moderator
-                  value: "true"
+                  valueBoolean: true
               - column:
                   name: reg_time
-                  value: "now()"
+                  valueDate: "now()"
               - column:
                   name: email
                   value: "user_2@mail.ru"
@@ -52,10 +52,10 @@ databaseChangeLog:
                   value: "000111999222"
               - column:
                   name: is_moderator
-                  value: "false"
+                  valueBoolean: false
               - column:
                   name: reg_time
-                  value: "now()"
+                  valueDate: "now()"
               - column:
                   name: email
                   value: "user_3@mail.ru"
@@ -79,7 +79,7 @@ databaseChangeLog:
                   value: "1"
               - column:
                   name: is_active
-                  value: "1"
+                  valueBoolean: true
               - column:
                   name: time
                   valueDate: "now()"
@@ -103,10 +103,10 @@ databaseChangeLog:
                   value: "3"
               - column:
                   name: is_active
-                  value: "1"
+                  valueBoolean: true
               - column:
                   name: time
-                  value: "now()"
+                  valueDate: "now()"
               - column:
                   name: title
                   value: "post 2"
@@ -127,10 +127,10 @@ databaseChangeLog:
                   value: "1"
               - column:
                   name: is_active
-                  value: "1"
+                  valueBoolean: true
               - column:
                   name: time
-                  value: "now()"
+                  valueDate: "now()"
               - column:
                   name: title
                   value: "post 3"
