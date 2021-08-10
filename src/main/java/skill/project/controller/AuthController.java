@@ -8,7 +8,7 @@ import skill.project.dto.response.AuthCheckResponse;
 
 /*Для запросов на auth/... */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
   @GetMapping("/check")

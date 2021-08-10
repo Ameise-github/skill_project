@@ -12,7 +12,7 @@ import skill.project.service.GeneralService;
 
 /*Для запросов которые некуда пристроить :))) */
 @RestController
-@RequestMapping("")
+@RequestMapping("/api")
 public class GeneralController {
   @Autowired
   private GeneralService generalService;

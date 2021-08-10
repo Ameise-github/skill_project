@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /*Для запросов не через API*/
 @RestController
-@RequestMapping("")
+@RequestMapping("/")
 public class DefaultController {
 
   @GetMapping

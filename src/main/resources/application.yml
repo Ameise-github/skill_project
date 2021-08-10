@@ -15,9 +15,9 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
 
-server:
-  servlet:
-    context-path: /api
+#server:
+#  servlet:
+#    context-path: /api
 
 blog:
   title: "DevPub"

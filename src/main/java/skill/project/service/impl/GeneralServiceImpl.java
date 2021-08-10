@@ -24,8 +24,7 @@ public class GeneralServiceImpl implements GeneralService {
   @Override
   public Map<String, Boolean> settingsMap() {
     List<GlobalSettings> settings = globalSettingsRepository.findAll();
-    Map<String, Boolean> settingsMap = settings.stream().collect(Collectors.toMap(GlobalSettings::getCode, v -> v.getValue().equals("YES")));
-    return settingsMap;
+    return settings.stream().collect(Collectors.toMap(GlobalSettings::getCode, v -> v.getValue().equals("YES")));
   }
 
   @Override
@@ -46,12 +45,15 @@ public class GeneralServiceImpl implements GeneralService {
     Query q = em.createNativeQuery(qs, TagStatisticEntity.class);
     q.setParameter("tag", query == null ? "" : query);
     List<TagStatisticEntity> allTag = q.getResultList();
-    Double maxW = allTag.stream().max((tg1, tg2) -> tg1.getCountTg().compareTo(tg2.getCountTg())).get().getWeight();
-    Double k = 1 / maxW;
-    TagResponse res = new TagResponse(allTag
-        .stream()
-        .map(t -> new TagDto(t.getName(), (t.getWeight() == null ? 0 : t.getWeight() * k)))
-        .collect(Collectors.toList()));
-    return res;
+    if (allTag.size() != 0) {
+      Double maxW = allTag.stream().max((tg1, tg2) -> tg1.getCountTg().compareTo(tg2.getCountTg())).get().getWeight();
+      Double k = 1 / maxW;
+      TagResponse res = new TagResponse(allTag
+          .stream()
+          .map(t -> new TagDto(t.getName(), (t.getWeight() == null ? 0 : t.getWeight() * k)))
+          .collect(Collectors.toList()));
+      return res;
+    }
+    return new TagResponse();
   }
 }

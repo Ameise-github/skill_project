@@ -12,7 +12,7 @@ import skill.project.service.PostService;
 
 /*Для запросов на post/... */
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostController {
   @Autowired
   private PostService postService;
@@ -21,8 +21,7 @@ public class PostController {
   public ResponseEntity<?> getPost(@RequestParam(name = "mode", defaultValue = "recent") ModeType mode,
                                    @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
                                    @RequestParam(name = "offset", defaultValue = "10", required = false) Integer limit) {
-    PostResponse posts = postService.getPosts(mode, offset, limit);
-    return ResponseEntity.ok(posts);
+    return ResponseEntity.ok(postService.getPosts(mode, offset, limit));
   }
 
 
