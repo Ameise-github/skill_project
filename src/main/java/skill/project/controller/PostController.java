@@ -20,7 +20,7 @@ public class PostController {
   @GetMapping
   public ResponseEntity<?> getPost(@RequestParam(name = "mode", defaultValue = "recent") ModeType mode,
                                    @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
-                                   @RequestParam(name = "offset", defaultValue = "10", required = false) Integer limit) {
+                                   @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit) {
     return ResponseEntity.ok(postService.getPosts(mode, offset, limit));
   }
 
