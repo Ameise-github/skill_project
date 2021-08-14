@@ -29,7 +29,7 @@ public class GeneralServiceImpl implements GeneralService {
 
   @Override
   public TagResponse getTags(String query){
-    String qs = "select tt.tg_id, tt.name, tt.c_tg, tt.c_all_p , trunc(cast(tt.c_tg as numeric) / cast(tt.c_all_p as numeric), 2) weight\n" +
+    String qs = "select tt.tg_id, tt.name, tt.c_tg, tt.c_all_p , trunc(cast(tt.c_tg as numeric(5,2)) / cast(tt.c_all_p as numeric(5,2)), 2) weight\n" +
         "from (\n" +
         "    select tg.id tg_id, tg.name , count(t2p.post_id) c_tg, p.c_all_p\n" +
         "    from tags tg\n" +

@@ -27,7 +27,7 @@ public class PostServiceImpl implements PostService {
   @Override
   public PostResponse getPosts(ModeType mode, Integer offset, Integer limit) {
     PostResponse posts = new PostResponse();
-    Page<Post> page = postRepository.getPosts(getSort(mode), Utils.getPageable(offset, limit));
+    Page<Post> page = postRepository.getPosts(mode.name(), Utils.getPageable(offset, limit));
     List<Post> postsL = page.getContent();
     List<SocialInfo> allSocial = socialInfoRepository.getAllPosts(postsL.stream().map(Post::getId).collect(Collectors.toList()));
     Map<Integer, SocialInfo> infoMap = allSocial.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));

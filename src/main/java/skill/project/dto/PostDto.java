@@ -26,6 +26,6 @@ public class PostDto {
       this.likeCount = socialInfo.getLikeCount();
       this.dislikeCount = socialInfo.getDislikeCount();
       this.commentCount = socialInfo.getCommentCount();
-      this.viewCount = post.getViewCount();
+      this.viewCount = post.getViewCount() == null ? 0 : post.getViewCount();
   }
 }

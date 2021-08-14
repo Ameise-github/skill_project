@@ -14,6 +14,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
         "        left join (select pv1.post_id, count(pv1.id) cnt_l from post_votes pv1 where pv1.value = '1' group by pv1.post_id) pv_l on p.id = pv_l.post_id\n" +
         "        where p.is_active = true and p.moderation_status = 'ACCEPTED' and p.time <= now()\n" +
         "        group by p.id, pv_l.cnt_l\n" +
-        "    )t order by ?1", nativeQuery = true)
+        "    )t order by \n" +
+        "         case when 'recent' = ?1 then t.time end desc, \n" +
+        "         case when 'popular' = ?1 then t.c_pc end desc, \n" +
+        "         case when 'best' = ?1 then t.c_l end desc, \n" +
+        "         case when 'early' = ?1 then t.time end asc ", nativeQuery = true)
     Page<Post> getPosts(String sort, Pageable page);
 }

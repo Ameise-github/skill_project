@@ -191,7 +191,8 @@ databaseChangeLog:
                   value: "3"
               - column:
                   name: time
-                  valueDate: "now() + interval '5 hours'"
+#                  valueDate: "now() + interval '5 hours'"
+                  valueDate: "now()"
               - column:
                   name: text
                   value: "new comment 1 for post 1"
@@ -206,7 +207,8 @@ databaseChangeLog:
                   value: "2"
               - column:
                   name: time
-                  valueDate: "now() + interval '10 hours'"
+#                  valueDate: "now() + interval '10 hours'"
+                  valueDate: "now()"
               - column:
                   name: text
                   value: "new comment 2 for post 2"
@@ -221,7 +223,8 @@ databaseChangeLog:
                   value: "1"
               - column:
                   name: time
-                  valueDate: "now() + interval '2 day'"
+#                  valueDate: "now() + interval '2 day'"
+                  valueDate: "now()"
               - column:
                   name: text
                   value: "new comment 3 for post 2"
