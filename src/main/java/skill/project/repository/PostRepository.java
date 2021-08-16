@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import skill.project.model.Post;
 
+import java.time.LocalDate;
+
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "select t.id, is_active, moderation_status, moderator_id, text, time, title, view_count, user_id\n" +
         "from ( select p.*, count(pc.id) c_pc, coalesce(pv_l.cnt_l, 0) c_l\n" +
@@ -20,4 +22,17 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
         "         case when 'best' = ?1 then t.c_l end desc, \n" +
         "         case when 'early' = ?1 then t.time end asc ", nativeQuery = true)
     Page<Post> getPosts(String sort, Pageable page);
+
+  @Query(value = " from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and " +
+      " (lower(title) like concat(concat('%', lower(?1)),'%') or lower(text) like concat(concat('%', lower(?1)),'%')) " +
+      "  order by timeCreate desc")
+  Page<Post> searchPost(String query, Pageable page);
+
+  @Query(value = "select * from post where is_active = true and moderation_status = 'ACCEPTED' and cast(time as date) = cast(?1 as date)",
+      nativeQuery = true)
+  Page<Post> getPostByTimeCreate(LocalDate date, Pageable page);
+
+  @Query(value = "from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and ?1 in (tags)")
+  Page<Post> getPostByTag(String tag, Pageable page);
+
 }

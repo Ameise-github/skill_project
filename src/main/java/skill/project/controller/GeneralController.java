@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import skill.project.dto.response.InitResponse;
 import skill.project.service.GeneralService;
 
+import java.time.LocalDate;
+
 /*Для запросов которые некуда пристроить :))) */
 @RestController
 @RequestMapping("/api")
@@ -32,5 +34,14 @@ public class GeneralController {
   @GetMapping("/tag")
   public ResponseEntity<?> getTags(@RequestParam(name = "query", required = false) String query) {
     return new ResponseEntity<>(generalService.getTags(query), HttpStatus.OK);
+  }
+
+  @GetMapping("/calendar")
+  public ResponseEntity<?> calendar(@RequestParam(name = "year", required = false) String year ) {
+    //TODO ждем ответа что с годом
+//    if ()
+//    String.valueOf(LocalDate.now().getYear())
+
+    return null;
   }
 }

@@ -71,5 +71,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.14.1</version>
         </dependency>
+
+        <!-- captcha -->
+        <dependency>
+            <groupId>com.github.cage</groupId>
+            <artifactId>cage</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,9 +1,16 @@
 package skill.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.springframework.core.metrics.StartupStep;
 import skill.project.model.Post;
+import skill.project.model.PostComments;
 import skill.project.model.SocialInfo;
+import skill.project.model.Tag;
 import skill.project.utils.Utils;
+
+import javax.xml.stream.events.Comment;
+import java.util.List;
 
 @Data
 public class PostDto {
@@ -17,10 +24,21 @@ public class PostDto {
   private int commentCount;
   private Integer viewCount;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private boolean active;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private List<Tag> tags;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private List<CommentDto> comments;
+
   public PostDto (Post post, SocialInfo socialInfo) {
       this.id = post.getId();
       this.timestamp = Utils.getTimestamp(post.getTimeCreate());
-      this.user = new UserDto(post.getUser().getId(), post.getUser().getName());
+      this.user = UserDto.
+          builder()
+          .id(post.getUser().getId())
+          .name(post.getUser().getName())
+          .build();
       this.title = post.getTitle();
       this.announce = Utils.shortTextNotHTML(post.getText());
       this.likeCount = socialInfo.getLikeCount();
