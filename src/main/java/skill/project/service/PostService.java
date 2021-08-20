@@ -10,7 +10,7 @@ public interface PostService {
 
   PostResponse searchPost(String query, Integer offset, Integer limit);
 
-  PostResponse getPostByDate(String date, Integer offset, Integer limit);
+  PostResponse getPostByDate(String dateStr, Integer offset, Integer limit);
 
   PostResponse getPostByTag(String tag, Integer offset, Integer limit);
 

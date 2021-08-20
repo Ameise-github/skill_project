@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import skill.project.model.Post;
 
+import javax.persistence.TemporalType;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "select t.id, is_active, moderation_status, moderator_id, text, time, title, view_count, user_id\n" +
@@ -24,8 +27,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> getPosts(String sort, Pageable page);
 
   @Query(value = " from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and " +
-      " (lower(title) like concat(concat('%', lower(?1)),'%') or lower(text) like concat(concat('%', lower(?1)),'%')) " +
-      "  order by timeCreate desc")
+      " (lower(title) like concat(concat('%', lower(?1)),'%') or lower(text) like concat(concat('%', lower(?1)),'%')) ")
   Page<Post> searchPost(String query, Pageable page);
 
   @Query(value = "select * from post where is_active = true and moderation_status = 'ACCEPTED' and cast(time as date) = cast(?1 as date)",
@@ -35,4 +37,14 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   @Query(value = "from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and ?1 in (tags)")
   Page<Post> getPostByTag(String tag, Pageable page);
 
+  @Query(value = "select  p.timeCreate, COUNT(p.id) \n" +
+      "FROM  Post p \n" +
+      "WHERE p.active = true AND p.moderationStatus = 'ACCEPTED' AND p.timeCreate < current_date and p.timeCreate = ?1 \n" +
+      "GROUP BY function('TRUNC', p.timeCreate) ")
+  Map<String, Integer> calendarPosts(String year);
+
+  @Query(value = "select distinct substring(function('TRUNC', p.timeCreate), 7) \n" +
+      "from Post p \n" +
+      "where p.active = true AND p.moderationStatus = 'ACCEPTED' AND p.timeCreate < current_date")
+  List<Integer> getYearPosts();
 }

@@ -3,14 +3,17 @@ package skill.project.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import skill.project.dto.TagDto;
+import skill.project.dto.response.CalendarResponse;
 import skill.project.dto.response.TagResponse;
 import skill.project.model.GlobalSettings;
 import skill.project.model.TagStatisticEntity;
 import skill.project.repository.GlobalSettingsRepository;
+import skill.project.repository.PostRepository;
 import skill.project.service.GeneralService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GeneralServiceImpl implements GeneralService {
   private final GlobalSettingsRepository globalSettingsRepository;
+  private final PostRepository postRepository;
   private final EntityManager em;
 
   @Override
@@ -55,5 +59,16 @@ public class GeneralServiceImpl implements GeneralService {
       return res;
     }
     return new TagResponse();
+  }
+
+  @Override
+  public CalendarResponse getCalendarPosts(String year) {
+    if (year == null || year.isEmpty()) {
+      year = String.valueOf(LocalDate.now().getYear());
+    }
+    Map<String, Integer> calPosts = postRepository.calendarPosts(year);
+    List<Integer> yearPosts = postRepository.getYearPosts();
+    CalendarResponse res = new CalendarResponse(yearPosts, calPosts);
+    return res;
   }
 }

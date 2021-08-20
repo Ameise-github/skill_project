@@ -14,6 +14,7 @@ import skill.project.model.Post;
 import skill.project.model.PostComments;
 import skill.project.model.SocialInfo;
 import skill.project.model.enums.ModeType;
+import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.CommentRepository;
 import skill.project.repository.PostRepository;
 import skill.project.repository.SocialInfoRepository;
@@ -21,6 +22,7 @@ import skill.project.service.PostService;
 import skill.project.utils.Utils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,17 +54,17 @@ public class PostServiceImpl implements PostService {
     if (query.isEmpty() || query.trim().isEmpty()) {
       posts = getPosts(ModeType.recent, offset, limit);
     }else {
-      Page<Post> postsPage = postRepository.searchPost(query, Utils.getPageable(offset, limit));
+      Page<Post> postsPage = postRepository.searchPost(query, Utils.getPageable(offset, limit, Sort.by(Sort.Direction.DESC, "time")));
       posts = new PostResponse(postsPage.getTotalElements(), getPostDto(postsPage.getContent()));
     }
     return posts;
   }
 
   @Override
-  public PostResponse getPostByDate(String date, Integer offset, Integer limit) {
+  public PostResponse getPostByDate(String dateStr, Integer offset, Integer limit) {
     //TODO check
-    LocalDate date1 = LocalDate.parse(date);
-    Page<Post> postPage = postRepository.getPostByTimeCreate(date1, Utils.getPageable(offset, limit));
+    LocalDate date = LocalDate.parse(dateStr);
+    Page<Post> postPage = postRepository.getPostByTimeCreate(date, Utils.getPageable(offset, limit));
     return new PostResponse(postPage.getTotalElements(), getPostDto(postPage.getContent()));
   }
 
@@ -77,12 +79,18 @@ public class PostServiceImpl implements PostService {
   public PostDto getPostId(Integer postId) {
     //TODO проверить метод
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
+    if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
+      throw new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND);
+    }
     List<SocialInfo> socialInfos = socialInfoRepository.getAllPosts(Collections.singletonList(postId));
     PostDto postDto = new PostDto(post, socialInfos.get(0));
     postDto.setTags(post.getTags());
     postDto.setActive(post.isActive());
     List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
+    //TODO прописать логику когда появится авторизация
+//    if (post.getUser().getId() != currentUser.getId() && !currentUser.IsModerator())
+    post.setViewCount(post.getViewCount() + 1);
     return postDto;
   }
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import skill.project.dto.response.CalendarResponse;
 import skill.project.dto.response.InitResponse;
 import skill.project.service.GeneralService;
 
@@ -38,10 +39,8 @@ public class GeneralController {
 
   @GetMapping("/calendar")
   public ResponseEntity<?> calendar(@RequestParam(name = "year", required = false) String year ) {
-    //TODO ждем ответа что с годом
-//    if ()
-//    String.valueOf(LocalDate.now().getYear())
-
-    return null;
+    //TODO Посты - только  за переданный год. Нет года - выводим за текущий год. Года отдаются все.
+    CalendarResponse calendarPosts = generalService.getCalendarPosts(year);
+    return new ResponseEntity<>(calendarPosts, HttpStatus.OK);
   }
 }
