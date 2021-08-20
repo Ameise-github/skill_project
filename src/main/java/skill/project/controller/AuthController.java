@@ -3,11 +3,11 @@ package skill.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import skill.project.dto.request.RegisterRequest;
 import skill.project.dto.response.AuthCheckResponse;
 import skill.project.service.CaptchaService;
+import skill.project.service.RegistrationService;
 
 /*Для запросов на auth/... */
 @RestController
@@ -15,6 +15,8 @@ import skill.project.service.CaptchaService;
 public class AuthController {
   @Autowired
   private CaptchaService captchaService;
+  @Autowired
+  private RegistrationService registrationService;
 
   @GetMapping("/check")
   public ResponseEntity<?> authCheck() {
@@ -25,5 +27,10 @@ public class AuthController {
   public ResponseEntity<?> getCaptcha() {
       captchaService.generateCaptcha();
       return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PostMapping("/register")
+  public ResponseEntity<?> register(@RequestBody RegisterRequest register) {
+    return new ResponseEntity<>(registrationService.register(register), HttpStatus.OK);
   }
 }

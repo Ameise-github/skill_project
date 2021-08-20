@@ -36,4 +36,11 @@ public class User {
   @Column(name = "photo")
   String photoUrl;
 
+  public User(LocalDateTime regTime, String name, String email, String password) {
+    this.regTime = regTime;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+  }
+
 }
