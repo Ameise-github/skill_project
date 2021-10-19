@@ -10,7 +10,7 @@ spring:
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
@@ -26,6 +26,10 @@ blog:
   email: panina.Alexa5@gmail.com
   copyright: Alex Pan
   copyrightFrom: 2021
+
+time:
+  captcha:
+    clear: 60  # считать в минутах
 
 #logging:
 #  level:

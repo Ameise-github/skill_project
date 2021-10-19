@@ -2,32 +2,36 @@ package skill.project.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import org.springframework.core.metrics.StartupStep;
+import lombok.NoArgsConstructor;
 import skill.project.model.Post;
-import skill.project.model.PostComments;
 import skill.project.model.SocialInfo;
 import skill.project.model.Tag;
 import skill.project.utils.Utils;
 
-import javax.xml.stream.events.Comment;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class PostDto {
   private int id;
   private long timestamp;
   private UserDto user;
   private String title;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private String announce;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String text;
   private int likeCount;
   private int dislikeCount;
-  private int commentCount;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Integer commentCount;
   private Integer viewCount;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private boolean active;
+  private Boolean active;
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private List<Tag> tags;
+  private List<String> tags;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private List<CommentDto> comments;
 
@@ -45,5 +49,15 @@ public class PostDto {
       this.dislikeCount = socialInfo.getDislikeCount();
       this.commentCount = socialInfo.getCommentCount();
       this.viewCount = post.getViewCount() == null ? 0 : post.getViewCount();
+  }
+
+  public static PostDto getFullPostDto(Post post, SocialInfo socialInfo) {
+    PostDto dto = new PostDto(post, socialInfo);
+    dto.setCommentCount(null);
+    dto.setAnnounce(null);
+    dto.setTags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
+    dto.setActive(post.isActive());
+    dto.setText(post.getText());
+    return dto;
   }
 }

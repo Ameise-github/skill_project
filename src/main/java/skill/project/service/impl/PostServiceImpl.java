@@ -1,6 +1,5 @@
 package skill.project.service.impl;
 
-import jdk.jshell.execution.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -37,24 +36,17 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostResponse getPosts(ModeType mode, Integer offset, Integer limit) {
-    Page<Post> page = postRepository.getPosts(getSort(mode), Utils.getPageable(offset, limit));
-//    List<Post> postsL = page.getContent();
-//    List<SocialInfo> allSocial = socialInfoRepository.getAllPosts(postsL.stream().map(Post::getId).collect(Collectors.toList()));
-//    Map<Integer, SocialInfo> infoMap = allSocial.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));
-//    posts.setCount(page.getTotalElements());
-//    posts.setPosts(postsL.stream().map(p -> new PostDto(p, infoMap.get(p.getId()))).collect(Collectors.toList()));
-//    posts.setPosts(getPostDto(page.getContent()));
+    Page<Post> page = postRepository.getPosts(mode.name(), Utils.getPageable(offset, limit));
     return new PostResponse(page.getTotalElements(), getPostDto(page.getContent()));
   }
 
   @Override
   public PostResponse searchPost(String query, Integer offset, Integer limit) {
-    //TODO check
     PostResponse posts;
-    if (query.isEmpty() || query.trim().isEmpty()) {
+    if (query == null || query.isEmpty() || query.trim().isEmpty()) {
       posts = getPosts(ModeType.recent, offset, limit);
     }else {
-      Page<Post> postsPage = postRepository.searchPost(query, Utils.getPageable(offset, limit, Sort.by(Sort.Direction.DESC, "time")));
+      Page<Post> postsPage = postRepository.searchPost(query, Utils.getPageable(offset, limit, Sort.by(Sort.Direction.DESC, "timeCreate")));
       posts = new PostResponse(postsPage.getTotalElements(), getPostDto(postsPage.getContent()));
     }
     return posts;
@@ -62,7 +54,6 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostResponse getPostByDate(String dateStr, Integer offset, Integer limit) {
-    //TODO check
     LocalDate date = LocalDate.parse(dateStr);
     Page<Post> postPage = postRepository.getPostByTimeCreate(date, Utils.getPageable(offset, limit));
     return new PostResponse(postPage.getTotalElements(), getPostDto(postPage.getContent()));
@@ -70,49 +61,26 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostResponse getPostByTag(String tag, Integer offset, Integer limit) {
-    //TODO check
     Page<Post> page = postRepository.getPostByTag(tag, Utils.getPageable(offset, limit));
     return new PostResponse(page.getTotalElements(), getPostDto(page.getContent()));
   }
 
   @Override
   public PostDto getPostId(Integer postId) {
-    //TODO проверить метод
+    //TODO исправить возврат ошибки
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
     if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
       throw new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND);
     }
     List<SocialInfo> socialInfos = socialInfoRepository.getAllPosts(Collections.singletonList(postId));
-    PostDto postDto = new PostDto(post, socialInfos.get(0));
-    postDto.setTags(post.getTags());
-    postDto.setActive(post.isActive());
+    PostDto postDto = PostDto.getFullPostDto(post, socialInfos.get(0));
     List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
     //TODO прописать логику когда появится авторизация
 //    if (post.getUser().getId() != currentUser.getId() && !currentUser.IsModerator())
     post.setViewCount(post.getViewCount() + 1);
+    postRepository.save(post);
     return postDto;
-  }
-
-  private String getSort(ModeType mode) {
-    String sort;
-    switch (mode) {
-      case recent:
-        sort = "t.time desc";
-        break;
-      case popular:
-        sort = "t.c_pc desc";
-        break;
-      case best:
-        sort = "t.c_l desc";
-        break;
-      case early:
-        sort = "t.time asc";
-        break;
-      default:
-        sort = "t.time desc";
-    }
-    return sort;
   }
 
   private List<PostDto> getPostDto(List<Post> posts) {

@@ -26,25 +26,26 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
         "         case when 'early' = ?1 then t.time end asc ", nativeQuery = true)
     Page<Post> getPosts(String sort, Pageable page);
 
-  @Query(value = " from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and " +
-      " (lower(title) like concat(concat('%', lower(?1)),'%') or lower(text) like concat(concat('%', lower(?1)),'%')) ")
+  @Query(value = "select p from Post p where p.active = true and p.timeCreate <= current_date and p.moderationStatus = 'ACCEPTED' and " +
+      " (lower(p.title) like concat(concat('%', lower(?1)),'%') or lower(p.text) like concat(concat('%', lower(?1)),'%')) ")
   Page<Post> searchPost(String query, Pageable page);
 
-  @Query(value = "select * from post where is_active = true and moderation_status = 'ACCEPTED' and cast(time as date) = cast(?1 as date)",
+  @Query(value = "select * from posts where is_active = true and moderation_status = 'ACCEPTED' and cast(time as date) = cast(?1 as date)",
       nativeQuery = true)
   Page<Post> getPostByTimeCreate(LocalDate date, Pageable page);
 
-  @Query(value = "from Post where active=true and timeCreate >= current_date and moderationStatus = 'ACCEPTED' and ?1 in (tags)")
+  @Query(value = "select p from Post p where p.active = true and p.timeCreate <= current_date and p.moderationStatus = 'ACCEPTED' and ?1 in (select tg.name from p.tags tg)")
   Page<Post> getPostByTag(String tag, Pageable page);
 
-  @Query(value = "select  p.timeCreate, COUNT(p.id) \n" +
-      "FROM  Post p \n" +
-      "WHERE p.active = true AND p.moderationStatus = 'ACCEPTED' AND p.timeCreate < current_date and p.timeCreate = ?1 \n" +
-      "GROUP BY function('TRUNC', p.timeCreate) ")
-  Map<String, Integer> calendarPosts(String year);
+  @Query(value = "select cast(cast(p.time as date) as text), COUNT(p.id) \n" +
+      "FROM  posts p \n" +
+      "WHERE p.is_active = true AND p.moderation_status = 'ACCEPTED' AND p.time <= current_date and extract(YEAR from p.time) = ?1\n" +
+      "group by p.time \n" +
+      "order by extract(YEAR from p.time)", nativeQuery = true)
+  List<Map<String, Object>> calendarPosts(double year);
 
-  @Query(value = "select distinct substring(function('TRUNC', p.timeCreate), 7) \n" +
-      "from Post p \n" +
-      "where p.active = true AND p.moderationStatus = 'ACCEPTED' AND p.timeCreate < current_date")
+  @Query(value = "select distinct extract(year from p.time)\n" +
+      "from posts p\n" +
+      "where p.is_active = true AND p.moderation_status = 'ACCEPTED' AND p.time <= now()", nativeQuery = true)
   List<Integer> getYearPosts();
 }

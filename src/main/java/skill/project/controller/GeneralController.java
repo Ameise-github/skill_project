@@ -39,7 +39,7 @@ public class GeneralController {
 
   @GetMapping("/calendar")
   public ResponseEntity<?> calendar(@RequestParam(name = "year", required = false) String year ) {
-    //TODO Посты - только  за переданный год. Нет года - выводим за текущий год. Года отдаются все.
+    //Посты - только  за переданный год. Нет года - выводим за текущий год. Года отдаются все.
     CalendarResponse calendarPosts = generalService.getCalendarPosts(year);
     return new ResponseEntity<>(calendarPosts, HttpStatus.OK);
   }

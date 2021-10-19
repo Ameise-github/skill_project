@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/data/db.views.yaml
+  - changeSet:
+      id: view_1
+      author: alexa
+      comment: "Create view social info"
+      changes:
+        - createView:
+            catalogName: public
+            encoding: UTF-8
+            fullDefinition: false
+            remarks: "view for social posts"
+            replaceIfExists: true
+#            schemaName: tasks
+            selectQuery: select p.id as obj_id,
+                        cast(count(case when pv.value = 1 then 1 end) as int) likes_count,
+                        cast(count(case when pv.value = -1 then 1 end) as int) dislikes_count,
+                        cast(coalesce(t.cc, 0) as int) comment_count
+                  from posts p
+                  left join (select pc.post_id, count(pc.id) cc from post_comments pc group by pc.post_id) t on p.id = t.post_id
+                  left join post_votes pv on p.id = pv.post_id
+                  group by p.id, t.cc
+            viewName: v_social_info
+
+        - createView:
+            catalogName: public
+            encoding: UTF-8
+            fullDefinition: false
+            remarks: "view for info tags"
+            replaceIfExists: true
+#            schemaName: tasks
+            selectQuery: with pst as (
+                          select count(*) c_all_p
+                          from posts p
+                          where p.is_active = true
+                          and p.moderation_status = 'ACCEPTED'
+                          and p.time <= now()
+                          )
+                          select tt.tg_id, tt.name, cast(tt.c_tg as int) count_tg, trunc(cast(tt.c_tg as numeric(5,2)) / cast((select pst.c_all_p from pst) as numeric(5,2)), 2) weight
+                          from (
+                          select tags.id tg_id, tags.name , count(t2p.post_id) c_tg
+                          from tags
+                          left join tag2post t2p on tags.id = t2p.tag_id
+                          group by tags.id
+                          )tt
+            viewName: v_tag_info

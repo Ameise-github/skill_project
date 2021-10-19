@@ -1,6 +1,7 @@
 package skill.project.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -8,10 +9,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
   @Id
-  @NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;
 

@@ -13,6 +13,9 @@ import skill.project.service.GeneralService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -33,28 +36,16 @@ public class GeneralServiceImpl implements GeneralService {
 
   @Override
   public TagResponse getTags(String query){
-    String qs = "select tt.tg_id, tt.name, tt.c_tg, tt.c_all_p , trunc(cast(tt.c_tg as numeric(5,2)) / cast(tt.c_all_p as numeric(5,2)), 2) weight\n" +
-        "from (\n" +
-        "    select tg.id tg_id, tg.name , count(t2p.post_id) c_tg, p.c_all_p\n" +
-        "    from tags tg\n" +
-        "    left join tag2post  t2p on tg.id = t2p.tag_id\n" +
-        "    right join  (select p.id, count(*) over() c_all_p\n" +
-        "            from posts p\n" +
-        "            where p.is_active = true\n" +
-        "            and p.moderation_status = 'ACCEPTED'\n" +
-        "            and p.time <= now()) p on p.id = t2p.post_id\n" +
-        "    where lower(tg.name) like lower(:tag  || '%')\n" +
-        "    group by tg.id,p.c_all_p\n" +
-        "         )tt";
+    String qs = "select * from v_tag_info tg where lower(tg.name) like lower(:tag  || '%')";
     Query q = em.createNativeQuery(qs, TagStatisticEntity.class);
     q.setParameter("tag", query == null ? "" : query);
     List<TagStatisticEntity> allTag = q.getResultList();
     if (allTag.size() != 0) {
-      Double maxW = allTag.stream().max((tg1, tg2) -> tg1.getCountTg().compareTo(tg2.getCountTg())).get().getWeight();
-      Double k = 1 / maxW;
+      BigDecimal maxW = allTag.stream().max((tg1, tg2) -> tg1.getCountTg().compareTo(tg2.getCountTg())).get().getWeight();
+      BigDecimal k = maxW.compareTo(BigDecimal.ZERO) != 0 ? BigDecimal.ONE.divide(maxW, RoundingMode.HALF_UP) : maxW;
       TagResponse res = new TagResponse(allTag
           .stream()
-          .map(t -> new TagDto(t.getName(), (t.getWeight() == null ? 0 : t.getWeight() * k)))
+          .map(t -> new TagDto(t.getName(), (t.getWeight() == null ? BigDecimal.ZERO : t.getWeight().multiply(k))))
           .collect(Collectors.toList()));
       return res;
     }
@@ -66,9 +57,8 @@ public class GeneralServiceImpl implements GeneralService {
     if (year == null || year.isEmpty()) {
       year = String.valueOf(LocalDate.now().getYear());
     }
-    Map<String, Integer> calPosts = postRepository.calendarPosts(year);
+    List<Map<String, Object>> calPostsModel = postRepository.calendarPosts(Double.parseDouble(year));
     List<Integer> yearPosts = postRepository.getYearPosts();
-    CalendarResponse res = new CalendarResponse(yearPosts, calPosts);
-    return res;
+    return new CalendarResponse(yearPosts, calPostsModel.stream().collect(Collectors.toMap(m -> (String)m.get("time"), v -> (BigInteger)v.get("count"))));
   }
 }

@@ -5,21 +5,24 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import java.math.BigInteger;
 
 @Data
 @Entity
+@Table(name = "v_social_info")
 public class SocialInfo {
   @Id
   @Column(name = "obj_id")
-  private int objId;
+  private Integer objId;
 
-  @Column(name = "like_c")
-  private int likeCount;
+  @Column(name = "likes_count")
+  private Integer likeCount;
 
-  @Column(name = "dislike_c")
-  private int dislikeCount;
+  @Column(name = "dislikes_count")
+  private Integer dislikeCount;
 
-  @Column(name = "comment_c")
+  @Column(name = "comment_count")
   private int commentCount;
 
 }

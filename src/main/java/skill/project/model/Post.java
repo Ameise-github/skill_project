@@ -48,7 +48,7 @@ public class Post {
   @Column(name = "view_count")
   Integer viewCount;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "tag2post",
   joinColumns = @JoinColumn(name = "post_id"),
   inverseJoinColumns = @JoinColumn(name = "tag_id"))

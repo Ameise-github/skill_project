@@ -25,8 +25,7 @@ public class AuthController {
 
   @GetMapping("/captcha")
   public ResponseEntity<?> getCaptcha() {
-      captchaService.generateCaptcha();
-      return new ResponseEntity<>(null, HttpStatus.OK);
+    return new ResponseEntity<>(captchaService.generateCaptcha(), HttpStatus.OK);
   }
 
   @PostMapping("/register")

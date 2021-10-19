@@ -7,7 +7,7 @@ import skill.project.dto.PostDto;
 
 import java.util.List;
 
-//@Getter
+@Getter
 //@Setter
 @AllArgsConstructor
 public class PostResponse {

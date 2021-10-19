@@ -24,7 +24,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
   @Override
   public RegisterResponse register(RegisterRequest registerNew) {
-    //TODO check
     RegisterError error = validData(registerNew);
     if (!error.isEmpty()) {
       return new RegisterResponse(false, error);
@@ -38,6 +37,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     if (error.isEmpty()) {
+      //TODO закодировать пароль
       User newUser = new User(LocalDateTime.now(), registerNew.getName(), registerNew.getEmail(), registerNew.getPassword());
       userRepository.save(newUser);
     }
