@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import skill.project.model.Post;
+import skill.project.model.SocialInfo;
 
-import javax.persistence.TemporalType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -48,4 +48,16 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "from posts p\n" +
       "where p.is_active = true AND p.moderation_status = 'ACCEPTED' AND p.time <= now()", nativeQuery = true)
   List<Integer> getYearPosts();
+
+  @Query(value = "select p.id as objId,\n" +
+      "       cast(count(case when pv.value = 1 then 1 end) as int)  likeCount,\n" +
+      "       cast(count(case when pv.value = -1 then 1 end) as int) dislikeCount,\n" +
+      "       cast(coalesce(t.cc, 0) as int)                         commentCount\n" +
+      "from posts p\n" +
+      "         left join (select pc.post_id, count(pc.id) cc from post_comments pc group by pc.post_id) t on p.id = t.post_id\n" +
+      "         left join post_votes pv on p.id = pv.post_id\n " +
+      " where p.id in (?1)" +
+      "group by p.id, t.cc",
+    nativeQuery = true)
+  List<SocialInfo> getSocial(List<Integer> postIds);
 }

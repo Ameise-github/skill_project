@@ -16,7 +16,6 @@ import skill.project.model.enums.ModeType;
 import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.CommentRepository;
 import skill.project.repository.PostRepository;
-import skill.project.repository.SocialInfoRepository;
 import skill.project.service.PostService;
 import skill.project.utils.Utils;
 
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
   private final PostRepository postRepository;
-  private final SocialInfoRepository socialInfoRepository;
   private final CommentRepository commentRepository;
 
   @Override
@@ -72,8 +70,8 @@ public class PostServiceImpl implements PostService {
     if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
       throw new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND);
     }
-    List<SocialInfo> socialInfos = socialInfoRepository.getAllPosts(Collections.singletonList(postId));
-    PostDto postDto = PostDto.getFullPostDto(post, socialInfos.get(0));
+    List<SocialInfo> socialList = postRepository.getSocial(Collections.singletonList(postId));
+    PostDto postDto = PostDto.getFullPostDto(post, socialList.get(0));
     List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
     //TODO прописать логику когда появится авторизация
@@ -84,8 +82,8 @@ public class PostServiceImpl implements PostService {
   }
 
   private List<PostDto> getPostDto(List<Post> posts) {
-    List<SocialInfo> allSocial = socialInfoRepository.getAllPosts(posts.stream().map(Post::getId).collect(Collectors.toList()));
-    Map<Integer, SocialInfo> infoMap = allSocial.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));
+    List<SocialInfo> socialList = postRepository.getSocial(posts.stream().map(Post::getId).collect(Collectors.toList()));
+    Map<Integer, SocialInfo> infoMap = socialList.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));
     return posts.stream().map(p -> new PostDto(p, infoMap.get(p.getId()))).collect(Collectors.toList());
   }
 }
