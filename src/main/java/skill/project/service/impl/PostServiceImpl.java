@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
     //TODO прописать логику когда появится авторизация
 //    if (post.getUser().getId() != currentUser.getId() && !currentUser.IsModerator())
-    post.setViewCount(post.getViewCount() + 1);
+    post.setViewCount(post.getViewCount() != null? post.getViewCount() + 1 : 1);
     postRepository.save(post);
     return postDto;
   }

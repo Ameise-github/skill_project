@@ -1,6 +1,8 @@
 package skill.project.service;
 
 import com.github.cage.Cage;
+import com.github.cage.ObjectRoulette;
+import com.github.cage.image.ConstantColorGenerator;
 import com.github.cage.image.EffectConfig;
 import com.github.cage.image.Painter;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +27,8 @@ public class CaptchaService {
 
   public CaptchaResponse generateCaptcha() {
     CaptchaResponse res = new CaptchaResponse();
-    Painter painter = new Painter(100, 35, Color.LIGHT_GRAY,  Painter.Quality.MAX,  new EffectConfig(), new Random());
-    Cage cage = new Cage(painter, null, null, "png", Cage.DEFAULT_COMPRESS_RATIO, null, new Random());
+    Painter painter = new Painter(200, 80, Color.WHITE,  Painter.Quality.MAX,  new EffectConfig(), new Random());
+    Cage cage = new Cage(painter, new ObjectRoulette(new Random(), new Font[]{new Font("Monospaced", 0, 35)}), new ConstantColorGenerator(Color.BLUE), "png", 0F, null, new Random());
     String token = cage.getTokenGenerator().next();
     String secret = UUID.randomUUID().toString().replace("-","");
 
@@ -41,6 +43,7 @@ public class CaptchaService {
     return res;
   }
 
+  //TODO выполнять раз в минуту
   private void clearCaptcha() {
     captchaRepository.deleteCaptcha(LocalDateTime.now().minusMinutes(timeCaptcha));
   }

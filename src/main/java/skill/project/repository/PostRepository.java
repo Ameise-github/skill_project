@@ -37,10 +37,13 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   @Query(value = "select p from Post p where p.active = true and p.timeCreate <= current_date and p.moderationStatus = 'ACCEPTED' and ?1 in (select tg.name from p.tags tg)")
   Page<Post> getPostByTag(String tag, Pageable page);
 
-  @Query(value = "select cast(cast(p.time as date) as text), COUNT(p.id) \n" +
-      "FROM  posts p \n" +
-      "WHERE p.is_active = true AND p.moderation_status = 'ACCEPTED' AND p.time <= current_date and extract(YEAR from p.time) = ?1\n" +
-      "group by p.time \n" +
+  @Query(value = "select cast(cast(p.time as date) as char) as time, COUNT(p.id) as count\n" +
+      "FROM posts p\n" +
+      "WHERE p.is_active = true\n" +
+      "  AND p.moderation_status = 'ACCEPTED'\n" +
+      "  AND p.time <= current_date\n" +
+      "  and extract(YEAR from p.time) = ?1\n" +
+      "group by p.time\n" +
       "order by extract(YEAR from p.time)", nativeQuery = true)
   List<Map<String, Object>> calendarPosts(double year);
 
@@ -50,14 +53,14 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   List<Integer> getYearPosts();
 
   @Query(value = "select p.id as objId,\n" +
-      "       cast(count(case when pv.value = 1 then 1 end) as int)  likeCount,\n" +
-      "       cast(count(case when pv.value = -1 then 1 end) as int) dislikeCount,\n" +
-      "       cast(coalesce(t.cc, 0) as int)                         commentCount\n" +
-      "from posts p\n" +
-      "         left join (select pc.post_id, count(pc.id) cc from post_comments pc group by pc.post_id) t on p.id = t.post_id\n" +
-      "         left join post_votes pv on p.id = pv.post_id\n " +
-      " where p.id in (?1)" +
-      "group by p.id, t.cc",
+      "             count(case when pv.value = 1 then 1 end)  likeCount,\n" +
+      "             count(case when pv.value = -1 then 1 end)  dislikeCount,\n" +
+      "             coalesce(t.cc, 0)                        commentCount\n" +
+      "      from posts p\n" +
+      "               left join (select pc.post_id, count(pc.id) cc from post_comments pc group by pc.post_id) t on p.id = t.post_id\n" +
+      "               left join post_votes pv on p.id = pv.post_id\n" +
+      "       where p.id in (?1)\n" +
+      "      group by p.id, t.cc",
     nativeQuery = true)
   List<SocialInfo> getSocial(List<Integer> postIds);
 }

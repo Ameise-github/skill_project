@@ -13,6 +13,6 @@ public interface CaptchaCodeRepository extends JpaRepository<CaptchaCode, Intege
 
   @Modifying
   @Transactional
-  @Query(value = "delete from CaptchaCode cc where cc.id in (select cc1.id from CaptchaCode cc1 where cc1.time <= ?1)")
+  @Query(value = "delete from CaptchaCode cc where cc.time <= ?1")
   void deleteCaptcha(LocalDateTime hour);
 }
