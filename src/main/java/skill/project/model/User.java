@@ -2,6 +2,7 @@ package skill.project.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import skill.project.model.enums.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -44,4 +45,7 @@ public class User {
     this.password = password;
   }
 
+  public Role getRole() {
+    return isModerator() ? Role.MODERATOR : Role.USER;
+  }
 }

@@ -1,6 +1,7 @@
 package skill.project.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import skill.project.dto.RegisterError;
 import skill.project.dto.request.RegisterRequest;
@@ -21,6 +22,7 @@ public class RegistrationServiceImpl implements RegistrationService {
   private final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
   private final CaptchaCodeRepository captchaRepository;
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public RegisterResponse register(RegisterRequest registerNew) {
@@ -37,8 +39,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     if (error.isEmpty()) {
-      //TODO закодировать пароль
-      User newUser = new User(LocalDateTime.now(), registerNew.getName(), registerNew.getEmail(), registerNew.getPassword());
+      User newUser = new User(LocalDateTime.now(), registerNew.getName(), registerNew.getEmail(), passwordEncoder.encode(registerNew.getPassword()));
       userRepository.save(newUser);
     }
 

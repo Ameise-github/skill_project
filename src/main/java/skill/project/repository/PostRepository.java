@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import skill.project.model.Post;
 import skill.project.model.SocialInfo;
+import skill.project.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -63,4 +64,27 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "      group by p.id, t.cc",
     nativeQuery = true)
   List<SocialInfo> getSocial(List<Integer> postIds);
+
+//  @Query(value = "select p from Post p \n" +
+//      " where case when 'inactive' = ?2 then (p.active = false) \n " +
+//      " when ?2 = 'pending' then (p.active and p.moderationStatus = 'NEW') \n" +
+//      " when ?2 = 'declined' then (p.active and  p.moderationStatus = 'DECLINED') \n" +
+//      " when ?2 = 'published' then (p.active and p.moderationStatus = 'ACCEPTED')" +
+//      " else p.active\n" +
+//      " end" +
+//      " and p.user.id = ?1")
+  @Query(value = "select *\n" +
+      "from posts\n" +
+      "where user_id = ?1\n" +
+      "    and (\n" +
+      "        case when ?2 = 'inactive' then is_active = false\n" +
+      "            when ?2 = 'pending' then is_active and moderation_status = 'NEW'\n" +
+      "            when ?2 = 'declined' then is_active and  moderation_status = 'DECLINED'\n" +
+      "            when ?2 = 'published' then is_active and moderation_status = 'ACCEPTED'\n" +
+      "        end\n" +
+      "    )", nativeQuery = true)
+  Page<Post> getMyPost(int userId, String status, Pageable pageable);
+
+  @Query(value = "select count(p.id) from Post p where p.moderationStatus = 'NEW' and p.moderator.id = ?1")
+  Integer countPostsForModeration(int moderatorId);
 }

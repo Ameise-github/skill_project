@@ -16,11 +16,13 @@ import skill.project.model.enums.ModeType;
 import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.CommentRepository;
 import skill.project.repository.PostRepository;
+import skill.project.security.CustomUser;
 import skill.project.service.PostService;
 import skill.project.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +66,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public PostDto getPostId(Integer postId) {
+  public PostDto getPostId(Integer postId, CustomUser principal) {
     //TODO исправить возврат ошибки
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
     if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
@@ -74,16 +76,25 @@ public class PostServiceImpl implements PostService {
     PostDto postDto = PostDto.getFullPostDto(post, socialList.get(0));
     List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
-    //TODO прописать логику когда появится авторизация
-//    if (post.getUser().getId() != currentUser.getId() && !currentUser.IsModerator())
-    post.setViewCount(post.getViewCount() != null? post.getViewCount() + 1 : 1);
-    postRepository.save(post);
+    if (!post.getUser().getId().equals(principal.getId()) && !principal.isModeration()) {
+      post.setViewCount(post.getViewCount() + 1);
+      postRepository.save(post);
+    }
     return postDto;
   }
 
   private List<PostDto> getPostDto(List<Post> posts) {
-    List<SocialInfo> socialList = postRepository.getSocial(posts.stream().map(Post::getId).collect(Collectors.toList()));
-    Map<Integer, SocialInfo> infoMap = socialList.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));
-    return posts.stream().map(p -> new PostDto(p, infoMap.get(p.getId()))).collect(Collectors.toList());
+    if(posts.size() > 0) {
+      List<SocialInfo> socialList = postRepository.getSocial(posts.stream().map(Post::getId).collect(Collectors.toList()));
+      Map<Integer, SocialInfo> infoMap = socialList.stream().collect(Collectors.toMap(SocialInfo::getObjId, s -> s));
+      return posts.stream().map(p -> new PostDto(p, infoMap.get(p.getId()))).collect(Collectors.toList());
+    }else
+      return new ArrayList<>();
+  }
+
+  @Override
+  public PostResponse getMyPosts(String status, Integer offset, Integer limit, CustomUser principal) {
+    Page<Post> postPage = postRepository.getMyPost(principal.getId(), status, Utils.getPageable(offset, limit));
+    return new PostResponse(postPage.getTotalElements(), getPostDto(postPage.getContent()));
   }
 }
