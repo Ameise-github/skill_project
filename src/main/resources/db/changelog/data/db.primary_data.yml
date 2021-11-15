@@ -1,3 +1,4 @@
+# У всех юзеров пароль 1234567890
 databaseChangeLog:
   - logicalFilePath: db/changelog/data/db.primary_data.yaml
   - changeSet:
@@ -13,7 +14,7 @@ databaseChangeLog:
                   value: "user 1"
               - column:
                   name: password
-                  value: "12345678"
+                  value: "$2a$12$u/d8DyPnS0YMbt3Slw38UO.x2iRKBFJ7DYmZnnNrn2gMYNt97yNSy"
               - column:
                   name: is_moderator
                   valueBoolean: false
@@ -31,7 +32,7 @@ databaseChangeLog:
                   value: "user 2"
               - column:
                   name: password
-                  value: "1029384756"
+                  value: "$2a$12$u/d8DyPnS0YMbt3Slw38UO.x2iRKBFJ7DYmZnnNrn2gMYNt97yNSy"
               - column:
                   name: is_moderator
                   valueBoolean: true
@@ -49,7 +50,7 @@ databaseChangeLog:
                   value: "user 3"
               - column:
                   name: password
-                  value: "000111999222"
+                  value: "$2a$12$u/d8DyPnS0YMbt3Slw38UO.x2iRKBFJ7DYmZnnNrn2gMYNt97yNSy"
               - column:
                   name: is_moderator
                   valueBoolean: false
@@ -59,84 +60,24 @@ databaseChangeLog:
               - column:
                   name: email
                   value: "user_3@mail.ru"
-
-  - changeSet:
-      id: data_2
-      author: alexa
-      comment: "Create posts"
-      changes:
         - insert:
-            tableName: posts
+            tableName: users
             columns:
               - column:
-                  name: moderation_status
-                  value: "ACCEPTED"
+                  name: name
+                  value: "user 4"
               - column:
-                  name: moderator_id
-                  value: "2"
+                  name: password
+                  value: "$2a$12$u/d8DyPnS0YMbt3Slw38UO.x2iRKBFJ7DYmZnnNrn2gMYNt97yNSy"
               - column:
-                  name: user_id
-                  value: "1"
-              - column:
-                  name: is_active
+                  name: is_moderator
                   valueBoolean: true
               - column:
-                  name: time
+                  name: reg_time
                   valueDate: "now()"
               - column:
-                  name: title
-                  value: "post 1"
-              - column:
-                  name: text
-                  value: "new post 1. new post now"
-        - insert:
-            tableName: posts
-            columns:
-              - column:
-                  name: moderation_status
-                  value: "ACCEPTED"
-              - column:
-                  name: moderator_id
-                  value: "2"
-              - column:
-                  name: user_id
-                  value: "3"
-              - column:
-                  name: is_active
-                  valueBoolean: true
-              - column:
-                  name: time
-                  valueDate: "now()"
-              - column:
-                  name: title
-                  value: "post 2"
-              - column:
-                  name: text
-                  value: "new post 2. new post now"
-        - insert:
-            tableName: posts
-            columns:
-              - column:
-                  name: moderation_status
-                  value: "ACCEPTED"
-              - column:
-                  name: moderator_id
-                  value: "2"
-              - column:
-                  name: user_id
-                  value: "1"
-              - column:
-                  name: is_active
-                  valueBoolean: true
-              - column:
-                  name: time
-                  valueDate: "now()"
-              - column:
-                  name: title
-                  value: "post 3"
-              - column:
-                  name: text
-                  value: "new post 3. new post now"
+                  name: email
+                  value: "user_4@mail.ru"
 
   - changeSet:
       id: data_3
@@ -207,7 +148,6 @@ databaseChangeLog:
                   value: "2"
               - column:
                   name: time
-#                  valueDate: "now() + interval '10 hours'"
                   valueDate: "now()"
               - column:
                   name: text
@@ -223,7 +163,6 @@ databaseChangeLog:
                   value: "1"
               - column:
                   name: time
-#                  valueDate: "now() + interval '2 day'"
                   valueDate: "now()"
               - column:
                   name: text

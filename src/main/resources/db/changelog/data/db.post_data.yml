@@ -1,0 +1,289 @@
+# У всех юзеров пароль 1234567890
+databaseChangeLog:
+  - logicalFilePath: db/changelog/data/db.post_data.yaml
+
+  - changeSet:
+      id: data_2
+      author: alexa
+      comment: "Create posts"
+      changes:
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 7 MONTH"
+              - column:
+                  name: title
+                  value: "post 1"
+              - column:
+                  name: text
+                  value: "Несмотря на то, что сейчас можно создавать отличные сайты на конструкторах в визуальном режиме, использование языка HTML остаётся важным навыком разработчика. Даже если вы не пишете шаблон с нуля, может возникнуть необходимость отредактировать его или вставить виджет стороннего сервиса — через HTML-код.
+HTML позволяет форматировать страницы, придавая им необходимый вид. Если такой задачи нет, то знание тегов поможет отредактировать код встраиваемого виджета. Понимая структуру HTML, вы, например, можете быстро изменить размер видео или виджета и другие особенности его отображения."
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 3 MONTH"
+              - column:
+                  name: title
+                  value: "post 2"
+              - column:
+                  name: text
+                  value: "Звездная ночь. <br>Самое подходящее время. Ужин при свечах. <d> Уютный итальянский ресторанчик. Маленькое черное платье.</d> Роскошные волосы, блестящие глаза, серебристый смех. Вместе уже два года. Чудесное время! Настоящая любовь, лучший друг, больше никого. Шампанского! Предлагаю руку и сердце. На одно колено. Люди смотрят? Ну и пусть! Прекрасное бриллиантовое кольцо. Румянец на щеках, очаровательная улыбка. Как, нет?!"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "ACCEPTED"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 2 MONTH"
+              - column:
+                  name: title
+                  value: "post 3"
+              - column:
+                  name: text
+                  value: "<div>«Чего хочет дьявол», Брайан Ньюэлл <br>
+                          «Два мальчика стояли и смотрели, как сатана медленно уходит прочь. Блеск его гипнотических глаз все ещё туманил их головы.<br>
+                          — Слушай, чего он от тебя хотел?<br>
+                          — Мою душу. А от тебя?<br>
+                          — Монетку для телефона-автомата. Ему срочно надо было позвонить.<br>
+                          — Хочешь, пойдём поедим?<br>
+                          — Хочу, но у меня теперь совсем нет денег.<br>
+                          — Ничего страшного. У меня полно».</div>"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "NEW"
+              - column:
+                  name: moderator_id
+                  value: "4"
+              - column:
+                  name: user_id
+                  value: "2"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now()"
+              - column:
+                  name: title
+                  value: "post 4"
+              - column:
+                  name: text
+                  value: "<div>Шерстяное одеяло, что ему недавно дали в благотворительном фонде, удобно обнимало его плечи, а ботинки, которые он сегодня нашел в мусорном баке, абсолютно не жали. Уличные огни так приятно согревали душу после всей этой холодящей темноты… Изгиб скамьи в парке казался таким знакомым его натруженной старой спине.</div><br> “Спасибо тебе, Господи, – подумал он, – жизнь просто восхитительна!”"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "declined"
+              - column:
+                  name: moderator_id
+                  value: "4"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: is_active
+                  valueBoolean: false
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 2 MONTH"
+              - column:
+                  name: title
+                  value: "post 5"
+              - column:
+                  name: text
+                  value: "new post 5. new post now. declineddeclineddeclineddeclined"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "declined"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: is_active
+                  valueBoolean: false
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 9 DAY"
+              - column:
+                  name: title
+                  value: "post 6"
+              - column:
+                  name: text
+                  value: "«Блестящие колготки туго и соблазнительно облегали прекрасные бёдра — чудесное дополнение к лёгкому вечернему платью. От самых кончиков бриллиантовых сережек до носков изящных туфелек на тонких шпильках — всё было просто шикарно. Глаза с только что наведёнными тенями рассматривали отражение в зеркале, и накрашенные яркой красной помадой губы растягивались от удовольствия. Внезапно сзади послышался детский голос:<br> «Папа?!»"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "new"
+              - column:
+                  name: moderator_id
+                  value: "4"
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 2 HOUR"
+              - column:
+                  name: title
+                  value: "post 7"
+              - column:
+                  name: text
+                  value: "Был только один выход, ибо наши жизни сплелись в слишком запутанный узел гнева и блаженства, чтобы решить все как-нибудь иначе. Доверимся жребию: орел – и мы поженимся, решка – и мы расстанемся навсегда. Монетка была подброшена. Она звякнула, завертелась и остановилась. Орел. Мы уставились на нее с недоумением. Затем, в один голос, мы сказали: «Может, еще разок?»"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "accepted"
+              - column:
+                  name: moderator_id
+                  value: "4"
+              - column:
+                  name: user_id
+                  value: "2"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 1 YEAR"
+              - column:
+                  name: title
+                  value: "post 8"
+              - column:
+                  name: text
+                  value: "Ослепительный свет фар, оглушающий скрежет, пронзительная боль, абсолютная боль, затем теплый, манящий, чистый голубой свет. Джон почувствовал себя удивительно счастливым, молодым, свободным, он двинулся по направлению к лучистому сиянию. Боль и темнота медленно вернулись. Джон медленно, с трудом открыл опухшие глаза. Бинты, какие-то трубки, гипс. Обеих ног как не бывало.<br> Заплаканная жена.<br> – Тебя спасли, дорогой!"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "accepted"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "4"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 3 HOUR"
+              - column:
+                  name: title
+                  value: "post 9"
+              - column:
+                  name: text
+                  value: "<p>«В поисках Правды», Роберт Томпкинс</p>
+                          <div><p>«Наконец в этой глухой, уединённой деревушке его поиски закончились. В ветхой избушке у огня сидела Правда. Он никогда не видел более старой и уродливой женщины.</p>
+                          <p>— Вы — Правда?</p>
+                          <p>Старая, сморщенная карга торжественно кивнула.</p>
+                          <p>— Скажите же, что я должен сообщить миру? Какую весть передать?</p>
+                          <p>Старуха плюнула в огонь и ответила:</p>
+                          <p>— Скажи им, что я молода и красива!»</p></div>"
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "declined"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "4"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now()"
+              - column:
+                  name: title
+                  value: "post 10"
+              - column:
+                  name: text
+                  value: ""
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: moderation_status
+                  value: "accepted"
+              - column:
+                  name: moderator_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "3"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: time
+                  valueDate: "now() - INTERVAL 10 MONTH"
+              - column:
+                  name: title
+                  value: "post 11"
+              - column:
+                  name: text
+                  value: "Однажды один богатый человек дал бедняку корзину, полную мусора. Бедняк ему улыбнулся и ушёл с корзиной. Вытряхнул из неё мусор, вычистил, а затем наполнил красивыми цветами. Вернулся он к богачу и вернул ему корзину.
+                          Богач удивился и спросил: <p>«Зачем ты мне даёшь эту корзину, наполненную красивыми цветами, если я дал тебе мусор?»</p>
+                          А бедняк ответил: <p>«Каждый даёт другому то, что имеет в своём сердце.»</p>"
