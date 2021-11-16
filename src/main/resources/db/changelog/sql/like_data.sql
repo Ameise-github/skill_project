@@ -1,0 +1,15 @@
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (2, 1, now() - interval 10 hour , -1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (1, 2, now() - interval 20 hour , -1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (1, 3, now() - interval 5 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (1, 4, now() - interval 8 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (2, 2, now() - interval 9 hour , -1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (4, 4, now() - interval 11 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (2, 4, now() - interval 10 hour , -1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (3, 3, now() - interval 15 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (3, 2, now() - interval 10 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (3, 4, now() - interval 24 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (4, 1, now() - interval 10 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (8, 3, now() - interval 36 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (8, 1, now() - interval 1 hour , -1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (9, 3, now() - interval 7 hour , 1);
+INSERT INTO post_votes (post_id, user_id, time, value) VALUES (10, 1, now(), 1);

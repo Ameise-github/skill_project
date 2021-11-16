@@ -114,56 +114,27 @@ databaseChangeLog:
               - column:
                   name: name
                   value: "sweets"
-
-
-  - changeSet:
-      id: data_4
-      author: alexa
-      comment: "Create comments"
-      changes:
         - insert:
-            tableName: post_comments
+            tableName: tags
             columns:
               - column:
-                  name: post_id
-                  value: "1"
-              - column:
-                  name: user_id
-                  value: "3"
-              - column:
-                  name: time
-#                  valueDate: "now() + interval '5 hours'"
-                  valueDate: "now()"
-              - column:
-                  name: text
-                  value: "new comment 1 for post 1"
+                  name: name
+                  value: "tag1"
         - insert:
-            tableName: post_comments
+            tableName: tags
             columns:
               - column:
-                  name: post_id
-                  value: "2"
-              - column:
-                  name: user_id
-                  value: "2"
-              - column:
-                  name: time
-                  valueDate: "now()"
-              - column:
-                  name: text
-                  value: "new comment 2 for post 2"
+                  name: name
+                  value: "tag22"
         - insert:
-            tableName: post_comments
+            tableName: tags
             columns:
               - column:
-                  name: post_id
-                  value: "2"
+                  name: name
+                  value: "tag 66"
+        - insert:
+            tableName: tags
+            columns:
               - column:
-                  name: user_id
-                  value: "1"
-              - column:
-                  name: time
-                  valueDate: "now()"
-              - column:
-                  name: text
-                  value: "new comment 3 for post 2"
+                  name: name
+                  value: "tag 86"

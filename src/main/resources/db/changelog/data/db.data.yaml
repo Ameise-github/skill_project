@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/data/db.data.yaml
+  - changeSet:
+      id: data_db_1
+      author: alexa
+      comment: "insert"
+      changes:
+        -  sqlFile:
+            dbms:  'mysql'
+            splitStatements:  true
+            path: db/changelog/sql/comment_data.sql
+            stripComments:  true
