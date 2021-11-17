@@ -23,6 +23,7 @@ public class Utils {
   }
 
   public static long getTimestamp(LocalDateTime dateTime) {
+    //TODO проверить правильность перевода
     return dateTime.atZone(ZoneOffset.UTC).toInstant().getEpochSecond();
   }
 

@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/data/db.global_settings.yaml
+  - logicalFilePath: db/changelog/data/02_db.global_settings.yaml
   - changeSet:
       id: global_1
       author: alexa

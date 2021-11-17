@@ -69,6 +69,7 @@ public class PostServiceImpl implements PostService {
   public PostDto getPostId(Integer postId, CustomUser principal) {
     //TODO исправить возврат ошибки
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
+    //TODO вопрос: условие, которое прописано на этот вызов не подходит под логику фронта. Что делать?
     if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
       throw new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND);
     }
@@ -76,8 +77,8 @@ public class PostServiceImpl implements PostService {
     PostDto postDto = PostDto.getFullPostDto(post, socialList.get(0));
     List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
     postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
-    if (!post.getUser().getId().equals(principal.getId()) && !principal.isModeration()) {
-      post.setViewCount(post.getViewCount() + 1);
+    if (principal == null ||(!post.getUser().getId().equals(principal.getId()) && !principal.isModeration())) {
+      post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
       postRepository.save(post);
     }
     return postDto;

@@ -1,6 +1,6 @@
 # У всех юзеров пароль 1234567890
 databaseChangeLog:
-  - logicalFilePath: db/changelog/data/db.primary_data.yaml
+  - logicalFilePath: db/changelog/data/01_db.primary_data.yaml
   - changeSet:
       id: data_1
       author: alexa

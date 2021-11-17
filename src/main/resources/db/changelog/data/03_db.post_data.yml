@@ -1,6 +1,6 @@
 # У всех юзеров пароль 1234567890
 databaseChangeLog:
-  - logicalFilePath: db/changelog/data/db.post_data.yaml
+  - logicalFilePath: db/changelog/data/03_db.post_data.yaml
 
   - changeSet:
       id: data_2
@@ -116,7 +116,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "declined"
+                  value: "DECLINED"
               - column:
                   name: moderator_id
                   value: "4"
@@ -140,7 +140,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "declined"
+                  value: "DECLINED"
               - column:
                   name: moderator_id
                   value: "2"
@@ -164,7 +164,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "new"
+                  value: "NEW"
               - column:
                   name: moderator_id
                   value: "4"
@@ -188,7 +188,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "accepted"
+                  value: "ACCEPTED"
               - column:
                   name: moderator_id
                   value: "4"
@@ -212,7 +212,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "accepted"
+                  value: "ACCEPTED"
               - column:
                   name: moderator_id
                   value: "2"
@@ -242,7 +242,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "declined"
+                  value: "DECLINED"
               - column:
                   name: moderator_id
                   value: "2"
@@ -266,7 +266,7 @@ HTML позволяет форматировать страницы, прида�
             columns:
               - column:
                   name: moderation_status
-                  value: "accepted"
+                  value: "ACCEPTED"
               - column:
                   name: moderator_id
                   value: "2"
