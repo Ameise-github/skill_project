@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import skill.project.dto.request.LikeRequest;
 import skill.project.dto.request.PostRequest;
 import skill.project.dto.response.Response;
 import skill.project.model.enums.ModeType;
@@ -82,5 +83,19 @@ public class PostController {
                                     @RequestBody PostRequest postRequest,
                                     @UserPrincipal CustomUser principal) {
     return new ResponseEntity<>(postService.editPost(postId, postRequest, principal), HttpStatus.OK);
+  }
+
+  @PostMapping("/like")
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> setLke(@UserPrincipal CustomUser principal, @RequestBody LikeRequest newLike) {
+    newLike.setValue(1);
+    return new ResponseEntity<>(postService.setLike(principal.getId(), newLike), HttpStatus.OK);
+  }
+
+  @PostMapping("/dislike")
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> setDislike(@UserPrincipal CustomUser principal, @RequestBody LikeRequest newDislike) {
+    newDislike.setValue(-1);
+    return new ResponseEntity<>(postService.setLike(principal.getId(), newDislike), HttpStatus.OK);
   }
 }

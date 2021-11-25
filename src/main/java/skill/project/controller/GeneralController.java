@@ -70,4 +70,15 @@ public class GeneralController {
   public ResponseEntity<?> editedProfile(@UserPrincipal CustomUser principal, @RequestBody ProfileRequest profile) {
     return ResponseEntity.ok(profileService.editedProfile(principal, profile));
   }
+
+  @GetMapping("/statistics/my")
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> getMyStatistics(@UserPrincipal CustomUser principal) {
+    return new ResponseEntity<>(generalService.myStatistics(principal.getId()), HttpStatus.OK);
+  }
+
+  @GetMapping("/statistics/all")
+  public ResponseEntity<?> getAllStatistics(@UserPrincipal CustomUser principal) {
+    return new ResponseEntity<>(generalService.allStatistics(principal), HttpStatus.OK);
+  }
 }

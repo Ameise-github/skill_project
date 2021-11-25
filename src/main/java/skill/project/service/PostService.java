@@ -1,6 +1,7 @@
 package skill.project.service;
 
 import skill.project.dto.PostDto;
+import skill.project.dto.request.LikeRequest;
 import skill.project.dto.request.PostRequest;
 import skill.project.dto.response.PostResponse;
 import skill.project.dto.response.Response;
@@ -26,4 +27,6 @@ public interface PostService {
   Response addPost(PostRequest postRequest, Integer userId);
 
   Response editPost(Integer postId, PostRequest postRequest, CustomUser principal);
+
+  Response setLike(Integer userId, LikeRequest newLike);
 }

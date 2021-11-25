@@ -7,10 +7,13 @@ import skill.project.dto.TagDto;
 import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.response.CalendarResponse;
 import skill.project.dto.response.Response;
+import skill.project.dto.response.StatisticResponse;
 import skill.project.dto.response.TagResponse;
+import skill.project.exeption.AppLogicException;
 import skill.project.exeption.NotFoundException;
 import skill.project.model.GlobalSettings;
 import skill.project.model.Post;
+import skill.project.model.StatisticModel;
 import skill.project.model.TagStatisticEntity;
 import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.GlobalSettingsRepository;
@@ -24,7 +27,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -78,5 +80,21 @@ public class GeneralServiceImpl implements GeneralService {
     }
 
     return res;
+  }
+
+  @Override
+  public StatisticResponse myStatistics(Integer userId) {
+    StatisticModel statistic = postRepository.getStatistic(userId);
+    return new StatisticResponse(statistic);
+  }
+
+  @Override
+  public StatisticResponse allStatistics(CustomUser principal) {
+    GlobalSettings stPublic = globalSettingsRepository.findByCode("STATISTICS_IS_PUBLIC");
+    if (stPublic.getValue().equals("NO") && !principal.isModeration())
+      throw new AppLogicException(HttpStatus.UNAUTHORIZED);
+
+    StatisticModel statistic = postRepository.getStatistic(null);
+    return new StatisticResponse(statistic);
   }
 }

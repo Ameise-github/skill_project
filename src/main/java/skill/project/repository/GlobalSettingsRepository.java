@@ -5,5 +5,5 @@ import skill.project.model.GlobalSettings;
 
 
 public interface GlobalSettingsRepository extends JpaRepository<GlobalSettings, Integer> {
-
+  GlobalSettings findByCode(String code);
 }

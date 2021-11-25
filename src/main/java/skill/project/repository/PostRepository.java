@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import skill.project.model.Post;
 import skill.project.model.SocialInfo;
+import skill.project.model.StatisticModel;
 import skill.project.model.User;
 
 import java.time.LocalDate;
@@ -90,4 +91,23 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
   @Query(value = "select p from Post p where p.moderationStatus = ?1 and p.user.id = ?2 and p.active")
   Page<Post> getPostsModeration(String status, Integer userId, Pageable pageable);
+
+  @Query(value = "with likes as (\n" +
+      "    select pv.post_id, count(case when pv.value = 1 then 1 end)  as l_count,\n" +
+      "    count(case when pv.value = -1 then 1 end) as disl_count\n" +
+      "    from post_votes pv\n" +
+      "    group by pv.post_id\n" +
+      "    )\n" +
+      "select count(p.id) posts_count,\n" +
+      "       sum(p.view_count) views_count,\n" +
+      "       sum(likes.disl_count) dislikes_count,\n" +
+      "       sum(likes.l_count) likes_count,\n" +
+      "       min(p.time) as first\n" +
+      "from posts p\n" +
+      "    left join likes on p.id = likes.post_id\n" +
+      "where (?1 is null or p.user_id = cast(?1 as int)) \n" +
+      "    and p.is_active\n" +
+      "    and p.moderation_status = 'ACCEPTED'\n" +
+      "    and p.time <= now()", nativeQuery = true)
+  StatisticModel getStatistic(Integer userId);
 }

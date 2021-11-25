@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import skill.project.dto.CommentDto;
 import skill.project.dto.PostDto;
 import skill.project.dto.error.PostError;
+import skill.project.dto.request.LikeRequest;
 import skill.project.dto.request.PostRequest;
 import skill.project.dto.response.PostResponse;
 import skill.project.dto.response.Response;
@@ -15,10 +16,7 @@ import skill.project.exeption.NotFoundException;
 import skill.project.model.*;
 import skill.project.model.enums.ModeType;
 import skill.project.model.enums.ModeratorEnum;
-import skill.project.repository.CommentRepository;
-import skill.project.repository.PostRepository;
-import skill.project.repository.TagRepository;
-import skill.project.repository.UserRepository;
+import skill.project.repository.*;
 import skill.project.security.CustomUser;
 import skill.project.service.PostService;
 import skill.project.utils.Utils;
@@ -35,6 +33,7 @@ public class PostServiceImpl implements PostService {
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
+  private final PostVotesRepository postVotesRepository;
 
   @Override
   public PostResponse getPosts(ModeType mode, Integer offset, Integer limit) {
@@ -154,5 +153,28 @@ public class PostServiceImpl implements PostService {
     if (postRequest.getText() == null || postRequest.getText().isEmpty() || postRequest.getText().length() < 50)
       error.setText("Текст публикации слишком короткий");
     return error;
+  }
+
+  @Override
+  public Response setLike(Integer userId, LikeRequest newLike) {
+    Post post = postRepository.findById(newLike.getPostId()).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
+    PostVotes pv = postVotesRepository.getByUser_Id(userId);
+    Response res = new Response(false);
+    if (pv == null) {
+      pv = new PostVotes();
+      pv.setPost(post);
+      pv.setUser(userRepository.getById(userId));
+      pv.setTimeCreate(LocalDateTime.now());
+      pv.setValue(newLike.getValue());
+    } else if (pv.getValue() != newLike.getValue()) {
+      pv.setValue(newLike.getValue());
+      pv.setTimeCreate(LocalDateTime.now());
+    }else {
+      return res;
+    }
+    postVotesRepository.save(pv);
+    res.setResult(true);
+
+    return res;
   }
 }

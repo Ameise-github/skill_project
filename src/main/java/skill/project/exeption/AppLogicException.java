@@ -17,4 +17,10 @@ public class AppLogicException extends BaseRuntimeException{
     this.httpStatus = httpStatus;
     this.data = data;
   }
+
+  public AppLogicException(HttpStatus httpStatus) {
+    this.httpStatus = httpStatus;
+    this.data = null;
+  }
+
 }
