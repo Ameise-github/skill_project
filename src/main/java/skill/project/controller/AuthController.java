@@ -11,7 +11,7 @@ import skill.project.security.CustomUser;
 import skill.project.security.UserPrincipal;
 import skill.project.service.CaptchaService;
 import skill.project.service.LoginService;
-import skill.project.service.RegistrationService;
+import skill.project.service.ProfileService;
 
 
 /*Для запросов на auth/... */
@@ -21,7 +21,7 @@ public class AuthController {
   @Autowired
   private CaptchaService captchaService;
   @Autowired
-  private RegistrationService registrationService;
+  private ProfileService profileService;
   @Autowired
   private LoginService loginService;
 
@@ -37,7 +37,7 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest register) {
-    return new ResponseEntity<>(registrationService.register(register), HttpStatus.OK);
+    return new ResponseEntity<>(profileService.register(register), HttpStatus.OK);
   }
 
   @PostMapping("/login")
@@ -49,4 +49,18 @@ public class AuthController {
   public ResponseEntity<?> logout() {
     return ResponseEntity.ok(AuthResponse.builder().result(true).build());
   }
+
+  @PostMapping("/restore")
+  public ResponseEntity<?> restorePassword() {
+    //TODO do
+    return ResponseEntity.ok(null);
+  }
+
+  @PostMapping("/password")
+  public ResponseEntity<?> editPassword() {
+    //TODO do
+    return ResponseEntity.ok(null);
+  }
+
+
 }

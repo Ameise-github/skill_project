@@ -29,6 +29,12 @@ time:
   captcha:
     clear: 60  # считать в минутах
 
+upload:
+  dir: src/upload
+  maxSize: 300 #считать в MBytes
+  profileSize: 5  #Мб
+  profileDir: src/upload/profile
+
 #logging:
 #  level:
 #    org:

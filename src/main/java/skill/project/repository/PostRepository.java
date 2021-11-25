@@ -87,4 +87,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
   @Query(value = "select count(p.id) from Post p where p.moderationStatus = 'NEW' and p.moderator.id = ?1")
   Integer countPostsForModeration(int moderatorId);
+
+  @Query(value = "select p from Post p where p.moderationStatus = ?1 and p.user.id = ?2 and p.active")
+  Page<Post> getPostsModeration(String status, Integer userId, Pageable pageable);
 }

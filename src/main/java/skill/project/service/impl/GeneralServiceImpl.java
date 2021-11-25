@@ -1,15 +1,22 @@
 package skill.project.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import skill.project.dto.TagDto;
+import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.response.CalendarResponse;
+import skill.project.dto.response.Response;
 import skill.project.dto.response.TagResponse;
+import skill.project.exeption.NotFoundException;
 import skill.project.model.GlobalSettings;
+import skill.project.model.Post;
 import skill.project.model.TagStatisticEntity;
+import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.GlobalSettingsRepository;
 import skill.project.repository.PostRepository;
 import skill.project.repository.TagRepository;
+import skill.project.security.CustomUser;
 import skill.project.service.GeneralService;
 
 import java.math.BigDecimal;
@@ -17,6 +24,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -56,5 +64,19 @@ public class GeneralServiceImpl implements GeneralService {
     List<Map<String, Object>> calPostsModel = postRepository.calendarPosts(Double.parseDouble(year));
     List<Integer> yearPosts = postRepository.getYearPosts();
     return new CalendarResponse(yearPosts, calPostsModel.stream().collect(Collectors.toMap(m -> (String)m.get("time"), v -> (BigInteger)v.get("count"))));
+  }
+
+  @Override
+  public Response moderationPost(CustomUser principal, ModeratorRequest moderatorPost) {
+    Post post = postRepository.findById(moderatorPost.getPostId()).orElseThrow(() -> new NotFoundException("пост не найден", HttpStatus.BAD_REQUEST));
+    Response res = new Response(false);
+    if (principal.isAccountNonExpired()) {
+      post.setModerationStatus(moderatorPost.getDecision().equals("accept") ? ModeratorEnum.ACCEPTED : ModeratorEnum.DECLINED);
+//      post.setModerator();  todo прописать если нигде не задается
+      postRepository.save(post);
+      res.setResult(true);
+    }
+
+    return res;
   }
 }

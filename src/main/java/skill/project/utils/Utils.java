@@ -5,7 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 
 public class Utils {
@@ -24,7 +26,11 @@ public class Utils {
 
   public static long getTimestamp(LocalDateTime dateTime) {
     //TODO проверить правильность перевода
-    return dateTime.atZone(ZoneOffset.UTC).toInstant().getEpochSecond();
+    return dateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
+  }
+
+  public static LocalDateTime getDateTime(long timestamp) {
+    return LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC);
   }
 
   public static String shortTextNotHTML(String text) {

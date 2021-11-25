@@ -29,4 +29,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
       "where lower(tt.name) like lower(CONCAT(?1,'%'))"
     , nativeQuery = true)
   List<TagStatisticEntity> getStatistic(String nameTag);
+
+  @Query(value = "select t from Tag t where t.name in ?1")
+  List<Tag> findAllByName(List<String> tags);
 }

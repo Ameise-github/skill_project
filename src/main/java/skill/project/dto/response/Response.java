@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import skill.project.dto.RegisterError;
+import skill.project.dto.error.ResponseErrors;
 
 @Setter
 @Getter
 @AllArgsConstructor
-public class RegisterResponse {
+public class Response {
   private Boolean result;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private RegisterError errors;
+  private ResponseErrors errors;
 
-  public RegisterResponse(Boolean result) {
+  public Response(Boolean result) {
     this.result = result;
   }
 }

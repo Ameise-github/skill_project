@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import skill.project.dto.request.PostRequest;
+import skill.project.dto.response.Response;
 import skill.project.model.enums.ModeType;
 import skill.project.security.CustomUser;
 import skill.project.security.UserPrincipal;
@@ -57,5 +59,28 @@ public class PostController {
                                      @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit,
                                      @UserPrincipal CustomUser principal){
     return ResponseEntity.ok(postService.getMyPosts(status, offset, limit, principal));
+  }
+
+  @GetMapping("/moderation")
+  @PreAuthorize("hasAuthority('user:moderator')")
+  public ResponseEntity<?> getPostModeration(@RequestParam(name = "status") String  status,
+                                             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
+                                             @RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit,
+                                             @UserPrincipal CustomUser principal) {
+    return ResponseEntity.ok(postService.getPostsModeration(status, offset, limit, principal.getId()));
+  }
+
+  @PostMapping
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> addPost(@RequestBody PostRequest postRequest, @UserPrincipal CustomUser principal) {
+    return new ResponseEntity<>(postService.addPost(postRequest, principal.getId()), HttpStatus.OK);
+  }
+
+  @PutMapping("/{ID}")
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> editPost(@PathVariable(name = "ID") Integer postId,
+                                    @RequestBody PostRequest postRequest,
+                                    @UserPrincipal CustomUser principal) {
+    return new ResponseEntity<>(postService.editPost(postId, postRequest, principal), HttpStatus.OK);
   }
 }

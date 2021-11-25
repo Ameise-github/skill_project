@@ -7,25 +7,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import skill.project.dto.CommentDto;
 import skill.project.dto.PostDto;
+import skill.project.dto.error.PostError;
+import skill.project.dto.request.PostRequest;
 import skill.project.dto.response.PostResponse;
+import skill.project.dto.response.Response;
 import skill.project.exeption.NotFoundException;
-import skill.project.model.Post;
-import skill.project.model.PostComments;
-import skill.project.model.SocialInfo;
+import skill.project.model.*;
 import skill.project.model.enums.ModeType;
 import skill.project.model.enums.ModeratorEnum;
 import skill.project.repository.CommentRepository;
 import skill.project.repository.PostRepository;
+import skill.project.repository.TagRepository;
+import skill.project.repository.UserRepository;
 import skill.project.security.CustomUser;
 import skill.project.service.PostService;
 import skill.project.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
+  private final UserRepository userRepository;
+  private final TagRepository tagRepository;
 
   @Override
   public PostResponse getPosts(ModeType mode, Integer offset, Integer limit) {
@@ -97,5 +99,60 @@ public class PostServiceImpl implements PostService {
   public PostResponse getMyPosts(String status, Integer offset, Integer limit, CustomUser principal) {
     Page<Post> postPage = postRepository.getMyPost(principal.getId(), status, Utils.getPageable(offset, limit));
     return new PostResponse(postPage.getTotalElements(), getPostDto(postPage.getContent()));
+  }
+
+  @Override
+  public PostResponse getPostsModeration(String status, Integer offset, Integer limit, Integer userId) {
+    Page<Post> postsPage = postRepository.getPostsModeration(status.toUpperCase(), userId, Utils.getPageable(offset, limit));
+    return new PostResponse(postsPage.getTotalElements(), getPostDto(postsPage.getContent()));
+  }
+
+  @Override
+  public Response addPost(PostRequest postRequest, Integer userId) {
+    PostError error = validPost(postRequest);
+    if (!error.isEmpty())
+      return new Response(false, error);
+
+    Post postModel = new Post();
+    editedPost(postModel, postRequest, false);
+    postModel.setUser(userRepository.getById(userId));
+    postRepository.save(postModel);
+
+    return new Response(true);
+  }
+
+  @Override
+  public Response editPost(Integer postId, PostRequest postRequest, CustomUser principal) {
+    Post postModel = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден!"));
+    PostError error = validPost(postRequest);
+    if (!error.isEmpty())
+      return new Response(false, error);
+
+    editedPost(postModel, postRequest, principal.isModeration());
+    postRepository.save(postModel);
+
+    return new Response(true);
+  }
+
+  private void editedPost(Post postModel, PostRequest postRequest, boolean moderator) {
+    List<Tag> tagsModel = tagRepository.findAllByName(postRequest.getTags());
+    LocalDateTime dateCreate = Utils.getDateTime(postRequest.getTimestamp());
+
+    postModel.setText(postRequest.getText());
+    postModel.setTitle(postRequest.getTitle());
+    postModel.setActive(postRequest.isActive());
+    if (!moderator)
+      postModel.setModerationStatus(ModeratorEnum.NEW);
+    postModel.setTags(tagsModel);
+    postModel.setTimeCreate(dateCreate.isBefore(LocalDateTime.now()) ? LocalDateTime.now() : dateCreate);
+  }
+
+  private PostError validPost(PostRequest postRequest) {
+    PostError error = new PostError();
+    if (postRequest.getTitle() == null || postRequest.getTitle().isEmpty() || postRequest.getTitle().length() < 3)
+      error.setTitle("Заголовок слишком короткий");
+    if (postRequest.getText() == null || postRequest.getText().isEmpty() || postRequest.getText().length() < 50)
+      error.setText("Текст публикации слишком короткий");
+    return error;
   }
 }
