@@ -3,6 +3,7 @@ package skill.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import skill.project.dto.request.RegisterRequest;
 import skill.project.dto.response.AuthResponse;
@@ -50,6 +51,7 @@ public class AuthController {
 
   @GetMapping("/logout")
   public ResponseEntity<?> logout() {
+    SecurityContextHolder.getContext().setAuthentication(null);
     return ResponseEntity.ok(AuthResponse.builder().result(true).build());
   }
 

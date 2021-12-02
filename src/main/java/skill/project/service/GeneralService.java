@@ -1,5 +1,6 @@
 package skill.project.service;
 
+import skill.project.dto.SettingsDto;
 import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.response.CalendarResponse;
 import skill.project.dto.response.Response;
@@ -21,4 +22,6 @@ public interface GeneralService {
   StatisticResponse myStatistics(Integer userId);
 
   StatisticResponse allStatistics(CustomUser principal);
+
+  void editedSettings(Map<String, Boolean> settings);
 }

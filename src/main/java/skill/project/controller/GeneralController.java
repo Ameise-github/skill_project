@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import skill.project.dto.SettingsDto;
 import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.request.ProfileRequest;
 import skill.project.dto.response.CalendarResponse;
@@ -41,6 +42,13 @@ public class GeneralController {
     return ResponseEntity.ok().body(generalService.settingsMap());
   }
 
+  @PutMapping("/settings")
+  @PreAuthorize("hasAuthority('user:moderator')")
+  public ResponseEntity<?> editedSettings(@UserPrincipal CustomUser user, @RequestBody SettingsDto settings) {
+//    generalService.editedSettings(); todo
+    return ResponseEntity.ok().build();
+  }
+
   @GetMapping("/tag")
   public ResponseEntity<?> getTags(@RequestParam(name = "query", required = false) String query) {
     return new ResponseEntity<>(generalService.getTags(query), HttpStatus.OK);
@@ -60,7 +68,7 @@ public class GeneralController {
   }
 
   @PostMapping("/moderation")
-  @PreAuthorize("hasAuthority('user:moderarot')")
+  @PreAuthorize("hasAuthority('user:moderator')")
   public ResponseEntity<?> moderatorPost(@UserPrincipal CustomUser principal, @RequestBody ModeratorRequest moderatorPost) {
     return new ResponseEntity<>(generalService.moderationPost(principal, moderatorPost), HttpStatus.OK);
   }

@@ -44,6 +44,19 @@ public class GeneralServiceImpl implements GeneralService {
   }
 
   @Override
+  public void editedSettings(Map<String, Boolean> settings) {
+    //todo попробовать переделать
+    // в модели поле value седлать boolean
+    // получать значение не через map, а через наименование поля
+    List<GlobalSettings> settingsModel = globalSettingsRepository.findAll();
+    settingsModel.forEach(s -> {
+      Boolean value = settings.get(s.getCode());
+      s.setValue(value ? "YES" : "NO");
+    });
+    globalSettingsRepository.saveAll(settingsModel);
+  }
+
+  @Override
   public TagResponse getTags(String query){
     List<TagStatisticEntity> allTag = tagRepository.getStatistic(query == null ? "" : query);
     if (allTag.size() != 0) {
