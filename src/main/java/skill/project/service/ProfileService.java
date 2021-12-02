@@ -9,4 +9,6 @@ public interface ProfileService {
   Response register(RegisterRequest registerNew);
 
   Response editedProfile(CustomUser principal, ProfileRequest profile);
+
+  Response editedPassword(RegisterRequest request);
 }

@@ -51,7 +51,6 @@ public class ProfileServiceImpl implements ProfileService {
     return new Response(true);
   }
 
-
   @Override
   public Response editedProfile(CustomUser principal, ProfileRequest profile) {
     User user = userRepository.getById(principal.getId());
@@ -101,6 +100,31 @@ public class ProfileServiceImpl implements ProfileService {
 
     userRepository.save(user);
     return new Response(true);
+  }
+
+  @Override
+  public Response editedPassword(RegisterRequest request) {
+    RegisterError error = new RegisterError();
+    User user = userRepository.findByCode(request.getCode());
+    if (user == null) {
+      error.setCode("Ссылка для восстановления пароля устарела. <a href=\"/auth/restore\">Запросить ссылку снова</a>");
+    }
+
+    CaptchaCode captcha = captchaRepository.findBySecretCode(request.getCaptchaSecret());
+    if (!captcha.getCode().equals(request.getCaptcha())) {
+      error.setCaptcha("Код с картинки введён неверно");
+    }
+    if (request.getPassword().length() < 6) {
+      error.setPassword("Пароль короче 6-ти символов");
+    }
+
+    if (error.isEmpty() && error.getCode() == null) {
+      user.setPassword(passwordEncoder.encode(request.getPassword()));
+      userRepository.save(user);
+      return new Response(true);
+    } else {
+      return new Response(false, error);
+    }
   }
 
   private RegisterError validData(RegisterRequest registerNew, boolean editPassword) {

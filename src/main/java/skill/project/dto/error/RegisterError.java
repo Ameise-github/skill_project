@@ -17,6 +17,9 @@ public class RegisterError implements ResponseErrors {
   private String captcha;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private String photo;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String code;
+
 
 
   //TODO проверить на изменение профиля где нет капчи

@@ -13,6 +13,9 @@ import skill.project.service.CaptchaService;
 import skill.project.service.LoginService;
 import skill.project.service.ProfileService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 
 /*Для запросов на auth/... */
 @RestController
@@ -51,15 +54,14 @@ public class AuthController {
   }
 
   @PostMapping("/restore")
-  public ResponseEntity<?> restorePassword() {
-    //TODO do
-    return ResponseEntity.ok(null);
+  public ResponseEntity<?> restorePassword(HttpServletRequest request, @RequestBody Map<String, String> body) {
+    String host = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    return ResponseEntity.ok().body(loginService.restorePassword(body, host));
   }
 
   @PostMapping("/password")
-  public ResponseEntity<?> editPassword() {
-    //TODO do
-    return ResponseEntity.ok(null);
+  public ResponseEntity<?> editPassword(@RequestBody RegisterRequest request) {
+    return ResponseEntity.ok(profileService.editedPassword(request));
   }
 
 
