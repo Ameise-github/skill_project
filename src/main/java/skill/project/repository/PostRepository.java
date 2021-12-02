@@ -66,14 +66,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     nativeQuery = true)
   List<SocialInfo> getSocial(List<Integer> postIds);
 
-//  @Query(value = "select p from Post p \n" +
-//      " where case when 'inactive' = ?2 then (p.active = false) \n " +
-//      " when ?2 = 'pending' then (p.active and p.moderationStatus = 'NEW') \n" +
-//      " when ?2 = 'declined' then (p.active and  p.moderationStatus = 'DECLINED') \n" +
-//      " when ?2 = 'published' then (p.active and p.moderationStatus = 'ACCEPTED')" +
-//      " else p.active\n" +
-//      " end" +
-//      " and p.user.id = ?1")
   @Query(value = "select *\n" +
       "from posts\n" +
       "where user_id = ?1\n" +
