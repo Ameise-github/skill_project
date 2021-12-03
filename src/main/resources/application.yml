@@ -14,10 +14,10 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yml
 
   mail:
-    host: smtp.gmail.com
+    host:  smtp.yandex.ru
     port: 587
-    username: test1
-    password: pass1
+    username: Alexandra-panina05@yandex.ru
+    password: nvxjbezhltiovbth
     properties:
       mail:
         smtp:

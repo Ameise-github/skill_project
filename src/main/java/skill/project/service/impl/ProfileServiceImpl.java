@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
   @Value("{$upload.profileSize}")
-  private int uploadFileSize;
+  private String uploadFileSize;
   private final long MBToBates = 1048576L;
   @Value("{$upload.profileDir}")
   private String uploadDir;
@@ -76,7 +76,7 @@ public class ProfileServiceImpl implements ProfileService {
       user.setPhotoUrl(null);
     }
     if (!profile.isRemovePhoto() && profile.getPhoto() != null && !profile.getPhoto().isEmpty()) {
-      if (profile.getPhoto().getSize() > (uploadFileSize * MBToBates)) {
+      if (profile.getPhoto().getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
         error.setPhoto("Фото слишком большое, нужно не более 5 Мб");
       } else {
         try {

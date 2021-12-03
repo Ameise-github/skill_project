@@ -70,19 +70,23 @@ public class PostServiceImpl implements PostService {
   public PostDto getPostId(Integer postId, CustomUser principal) {
     //TODO исправить возврат ошибки
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
-    //TODO вопрос: условие, которое прописано на этот вызов не подходит под логику фронта. Что делать?
-    if (!post.isActive() || post.getModerationStatus() != ModeratorEnum.ACCEPTED || post.getTimeCreate().isAfter(LocalDateTime.now())) {
+    if (
+        (post.isActive() && post.getModerationStatus().equals(ModeratorEnum.ACCEPTED) && post.getTimeCreate().isBefore(LocalDateTime.now()))
+        || (principal != null && Objects.equals(post.getUser().getId(), principal.getId()))
+        || (principal != null && principal.isModeration())
+    ) {
+      List<SocialInfo> socialList = postRepository.getSocial(Collections.singletonList(postId));
+      PostDto postDto = PostDto.getFullPostDto(post, socialList.get(0));
+      List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
+      postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
+      if (principal == null ||(!post.getUser().getId().equals(principal.getId()) && !principal.isModeration())) {
+        post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
+        postRepository.save(post);
+      }
+      return postDto;
+    } else {
       throw new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND);
     }
-    List<SocialInfo> socialList = postRepository.getSocial(Collections.singletonList(postId));
-    PostDto postDto = PostDto.getFullPostDto(post, socialList.get(0));
-    List<PostComments> comments = commentRepository.getPostCommentsByPost(post);
-    postDto.setComments(comments.stream().map(CommentDto::new).collect(Collectors.toList()));
-    if (principal == null ||(!post.getUser().getId().equals(principal.getId()) && !principal.isModeration())) {
-      post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
-      postRepository.save(post);
-    }
-    return postDto;
   }
 
   private List<PostDto> getPostDto(List<Post> posts) {

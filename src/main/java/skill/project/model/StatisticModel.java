@@ -3,13 +3,13 @@ package skill.project.model;
 import java.time.LocalDateTime;
 
 public interface StatisticModel {
-  int getPostsCount();
+  Integer getPostsCount();
 
-  int getLikesCount();
+  Integer getLikesCount();
 
-  int getDislikesCount();
+  Integer getDislikesCount();
 
-  int getViewsCount();
+  Integer getViewsCount();
 
   LocalDateTime getFirstPublication();
 }

@@ -81,7 +81,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   @Query(value = "select count(p.id) from Post p where p.moderationStatus = 'NEW' and p.moderator.id = ?1")
   Integer countPostsForModeration(int moderatorId);
 
-  @Query(value = "select p from Post p where p.moderationStatus = ?1 and p.user.id = ?2 and p.active")
+  @Query(value = "select p from Post p where p.moderationStatus = ?1 and p.user.id = ?2 and p.active = true")
   Page<Post> getPostsModeration(String status, Integer userId, Pageable pageable);
 
   @Query(value = "with likes as (\n" +
@@ -97,7 +97,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "       min(p.time) as first\n" +
       "from posts p\n" +
       "    left join likes on p.id = likes.post_id\n" +
-      "where (?1 is null or p.user_id = cast(?1 as int)) \n" +
+      "where (?1 is null or p.user_id = cast(?1 as SIGNED)) \n" +
       "    and p.is_active\n" +
       "    and p.moderation_status = 'ACCEPTED'\n" +
       "    and p.time <= now()", nativeQuery = true)

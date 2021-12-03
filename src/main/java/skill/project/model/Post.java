@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name = "posts")
 public class Post {
   @Id
-  @NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Integer id;
 

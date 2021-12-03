@@ -24,12 +24,12 @@ public class UploadServiceImpl implements UploadService {
   @Value("{$upload.dir}")
   private String uploadDir;
   @Value("{$upload.maxSize}")
-  private int maxSize;
+  private String maxSize;
   private final long MBToBates = 1048576L;
 
   @Override
   public String uploadImage(MultipartFile image) {
-    if (image.getSize() > (maxSize * MBToBates))
+    if (image.getSize() > (Long.parseLong(maxSize) * MBToBates))
       throw new AppLogicException(
           HttpStatus.BAD_REQUEST,
           new Response(false, new ImgError("Размер файла превышает допустимый размер"))
