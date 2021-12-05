@@ -1,6 +1,7 @@
 package skill.project.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UploadServiceImpl implements UploadService {
-  @Value("{$upload.dir}")
+  @Value("${upload.dir}")
   private String uploadDir;
-  @Value("{$upload.maxSize}")
+  @Value("${upload.maxSize}")
   private String maxSize;
   private final long MBToBates = 1048576L;
 
@@ -35,10 +37,8 @@ public class UploadServiceImpl implements UploadService {
           new Response(false, new ImgError("Размер файла превышает допустимый размер"))
       );
 
-    String filename = image.getResource().getFilename();
-    int index = filename.lastIndexOf(".");
-    String ext = filename.substring(index + 1);
-    if (!"jpg".equals(ext) || !"png".equals(ext))
+    String type = image.getContentType();
+    if (!"image/jpeg".equals(type) && !"image/png".equals(type))
       throw new AppLogicException(
           HttpStatus.BAD_REQUEST,
           new Response(false, new ImgError("Неверный формат изображения"))
@@ -46,8 +46,13 @@ public class UploadServiceImpl implements UploadService {
 
     String res = "";
     try {
-      Path copyLocation = Paths
-          .get(uploadDir + File.separator + StringUtils.cleanPath(image.getOriginalFilename()));
+      String filename = image.getResource().getFilename();
+      String ext = filename.substring(filename.lastIndexOf("."));
+      Path filePath = Paths.get(uploadDir + File.separator + RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator +
+          RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator +
+          RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator) ;
+      Files.createDirectories(filePath);
+      Path copyLocation = filePath.resolve(UUID.randomUUID().toString() + ext);
       Files.copy(image.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
       res = copyLocation.toString();
     } catch (Exception e) {

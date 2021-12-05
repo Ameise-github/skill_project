@@ -87,7 +87,7 @@ public class GeneralServiceImpl implements GeneralService {
     Response res = new Response(false);
     if (principal.isAccountNonExpired()) {
       post.setModerationStatus(moderatorPost.getDecision().equals("accept") ? ModeratorEnum.ACCEPTED : ModeratorEnum.DECLINED);
-//      post.setModerator();  todo прописать если нигде не задается
+      post.setModeratorId(principal.getId());
       postRepository.save(post);
       res.setResult(true);
     }

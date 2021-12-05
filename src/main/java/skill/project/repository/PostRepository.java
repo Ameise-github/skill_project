@@ -8,6 +8,7 @@ import skill.project.model.Post;
 import skill.project.model.SocialInfo;
 import skill.project.model.StatisticModel;
 import skill.project.model.User;
+import skill.project.model.enums.ModeratorEnum;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +46,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "  AND p.moderation_status = 'ACCEPTED'\n" +
       "  AND p.time <= current_date\n" +
       "  and extract(YEAR from p.time) = ?1\n" +
-      "group by p.time\n" +
+      "group by cast(p.time as date)\n" +
       "order by extract(YEAR from p.time)", nativeQuery = true)
   List<Map<String, Object>> calendarPosts(double year);
 
@@ -78,10 +79,18 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "    )", nativeQuery = true)
   Page<Post> getMyPost(int userId, String status, Pageable pageable);
 
-  @Query(value = "select count(p.id) from Post p where p.moderationStatus = 'NEW' and p.moderator.id = ?1")
-  Integer countPostsForModeration(int moderatorId);
+  @Query(value = "select count(p.id) from Post p where p.moderationStatus = 'NEW' and p.moderatorId is null")
+  Integer countPostsForModeration();
 
-  @Query(value = "select p from Post p where p.moderationStatus = ?1 and p.user.id = ?2 and p.active = true")
+  @Query(value = "select * \n" +
+      "from posts p \n" +
+      "where p.moderation_status = ?1 \n" +
+      "  and p.is_active = true \n" +
+      "  and ( \n" +
+      "      case when ?2 is null then p.moderator_id is null\n" +
+      "          else p.moderator_id = ?2\n" +
+      "      end\n" +
+      "      )", nativeQuery = true)
   Page<Post> getPostsModeration(String status, Integer userId, Pageable pageable);
 
   @Query(value = "with likes as (\n" +
@@ -90,11 +99,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "    from post_votes pv\n" +
       "    group by pv.post_id\n" +
       "    )\n" +
-      "select count(p.id) posts_count,\n" +
-      "       sum(p.view_count) views_count,\n" +
-      "       sum(likes.disl_count) dislikes_count,\n" +
-      "       sum(likes.l_count) likes_count,\n" +
-      "       min(p.time) as first\n" +
+      "select count(p.id) postsCount,\n" +
+      "       sum(p.view_count) viewsCount,\n" +
+      "       sum(likes.disl_count) dislikesCount,\n" +
+      "       sum(likes.l_count) likesCount,\n" +
+      "       min(p.time) as firstPublication\n" +
       "from posts p\n" +
       "    left join likes on p.id = likes.post_id\n" +
       "where (?1 is null or p.user_id = cast(?1 as SIGNED)) \n" +

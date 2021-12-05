@@ -106,7 +106,12 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostResponse getPostsModeration(String status, Integer offset, Integer limit, Integer userId) {
-    Page<Post> postsPage = postRepository.getPostsModeration(status.toUpperCase(), userId, Utils.getPageable(offset, limit));
+    Page<Post> postsPage;
+    if ("new".equals(status)) {
+      postsPage = postRepository.getPostsModeration(status.toUpperCase(), null, Utils.getPageable(offset, limit));
+    } else {
+      postsPage = postRepository.getPostsModeration(status.toUpperCase(), userId, Utils.getPageable(offset, limit));
+    }
     return new PostResponse(postsPage.getTotalElements(), getPostDto(postsPage.getContent()));
   }
 

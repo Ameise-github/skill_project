@@ -25,9 +25,8 @@ public class Post {
   @Column(name = "moderation_status")
   ModeratorEnum moderationStatus = ModeratorEnum.NEW;
 
-  @ManyToOne
-  @JoinColumn(name = "moderator_id")
-  User moderator;
+  @Column(name = "moderator_id")
+  Integer moderatorId;
 
   @NotNull
   @ManyToOne
@@ -42,6 +41,7 @@ public class Post {
   String title;
 
   @NotNull
+  @Column(name = "text", columnDefinition = "text")
   String text;
 
   @Column(name = "view_count")

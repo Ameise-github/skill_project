@@ -40,7 +40,7 @@ public class LoginServiceImpl implements LoginService {
         .user(new UserResponse(principal))
         .build();
     if (principal.isModeration()) {
-      response.getUser().setModerationCount(postRepository.countPostsForModeration(principal.getId()));
+      response.getUser().setModerationCount(postRepository.countPostsForModeration());
     }
     return response;
   }
@@ -55,7 +55,7 @@ public class LoginServiceImpl implements LoginService {
         .user(new UserResponse(principal))
         .build();
     if (principal.isModeration()) {
-      response.getUser().setModerationCount(postRepository.countPostsForModeration(principal.getId()));
+      response.getUser().setModerationCount(postRepository.countPostsForModeration());
     }
     return response;
   }

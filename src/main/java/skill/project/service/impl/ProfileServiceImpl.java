@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
-  @Value("{$upload.profileSize}")
+  @Value("${upload.profileSize}")
   private String uploadFileSize;
   private final long MBToBates = 1048576L;
-  @Value("{$upload.profileDir}")
+  @Value("${upload.profileDir}")
   private String uploadDir;
 
   private final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
@@ -40,7 +40,7 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Override
   public Response register(RegisterRequest registerNew) {
-    RegisterError error = validData(registerNew, true);
+    RegisterError error = validData(registerNew, false);
     if (!error.isEmpty()) {
       return new Response(false, error);
     }
@@ -59,21 +59,25 @@ public class ProfileServiceImpl implements ProfileService {
             .email(profile.getEmail())
             .password(profile.getPassword())
             .name(profile.getName())
-            .build(), (profile.getPassword() != null && !profile.getPassword().isEmpty()));
+            .build(), true);
     if (!error.isEmpty()) {
-      //TODO проверить какой статус возвращать
       return new Response(false, error);
     }
 
     user.setEmail(profile.getEmail());
     user.setName(profile.getName());
+    principal.setName(user.getName());
+    principal.setEmail(profile.getEmail());
 
     if (profile.getPassword() != null && !profile.getPassword().isEmpty()) {
-      user.setPassword(passwordEncoder.encode(profile.getPassword()));
+      String password = passwordEncoder.encode(profile.getPassword());
+      user.setPassword(password);
+      principal.setPassword(password);
     }
 
     if (profile.isRemovePhoto()) {
       user.setPhotoUrl(null);
+      principal.setPhoto(null);
     }
     if (!profile.isRemovePhoto() && profile.getPhoto() != null && !profile.getPhoto().isEmpty()) {
       if (profile.getPhoto().getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
@@ -91,6 +95,7 @@ public class ProfileServiceImpl implements ProfileService {
               .outputQuality(0.8)
               .toFile(fileName);
           user.setPhotoUrl(fileName);
+          principal.setPhoto(fileName);
         } catch (IOException e) {
           e.printStackTrace();
           return new Response(false);
@@ -127,14 +132,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
   }
 
-  private RegisterError validData(RegisterRequest registerNew, boolean editPassword) {
+  private RegisterError validData(RegisterRequest registerNew, boolean isEdit) {
     RegisterError error = new RegisterError();
     if (registerNew.getName() == null || registerNew.getName().isEmpty()
         || registerNew.getEmail() == null || registerNew.getEmail().isEmpty()) {
       error.setEmail("E-mail не должен быть пустым");
       error.setName("ФИО не должно быть пустым");
 
-      if (editPassword &&
+      if (!isEdit &&
           (registerNew.getPassword() == null || registerNew.getPassword().isEmpty())
       ) {
         error.setPassword("Заполните пароль");
@@ -143,7 +148,7 @@ public class ProfileServiceImpl implements ProfileService {
       return error;
     }
 
-    if (registerNew.getPassword().length() < 6) {
+    if (registerNew.getPassword() != null && registerNew.getPassword().length() < 6) {
       error.setPassword("Пароль короче 6-ти символов");
     }
 
@@ -153,7 +158,7 @@ public class ProfileServiceImpl implements ProfileService {
       error.setEmail("Проверьте правильность ввода адреса электронной почты");
     }
 
-    if (error.getEmail() == null || error.getEmail().isEmpty()) {
+    if ((error.getEmail() == null || error.getEmail().isEmpty()) && !isEdit) {
       User user = userRepository.findByEmailLike(registerNew.getEmail());
       if (user != null) {
         if (error.getEmail() == null || error.getEmail().isEmpty()) {

@@ -154,10 +154,10 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: title
-                  type: varchar(100)
+                  type: varchar(500)
               - column:
                   name: text
-                  type: varchar(800)
+                  type: text
               - column:
                   name: view_count
                   type: integer

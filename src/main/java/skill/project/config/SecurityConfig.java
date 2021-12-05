@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import skill.project.security.CustomUserDetailsService;
 
 @Configuration
@@ -48,13 +49,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**").permitAll()
         .anyRequest().authenticated()
         .and()
-        .formLogin().disable()
-        .httpBasic()
+          .formLogin().disable()
+          .httpBasic()
         .and()
-        .logout(logout -> logout
-            .invalidateHttpSession(true)
-            .deleteCookies("JSESSIONID")
-        )
+          .logout()
+
+//            (logout -> logout
+//            .logoutUrl("/api/auth/logout")
+//            .invalidateHttpSession(true)
+//            .deleteCookies("JSESSIONID")
+//            .clearAuthentication(true)
+//
+//        )
     ;
   }
 }

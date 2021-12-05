@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/tasks?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
-    password: root
+    password: 1234 #root
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
