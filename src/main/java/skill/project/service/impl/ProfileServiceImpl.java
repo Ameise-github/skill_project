@@ -84,8 +84,8 @@ public class ProfileServiceImpl implements ProfileService {
         error.setPhoto("Фото слишком большое, нужно не более 5 Мб");
       } else {
         try {
+          //TODO переделать
           Resource resource = profile.getPhoto().getResource();
-          //todo сделать красиво
           String filename = resource.getFilename();
           int index = filename.lastIndexOf(".");
           String ext = filename.substring(index);
