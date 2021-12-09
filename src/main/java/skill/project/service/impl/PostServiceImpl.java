@@ -167,7 +167,7 @@ public class PostServiceImpl implements PostService {
   @Override
   public Response setLike(Integer userId, LikeRequest newLike) {
     Post post = postRepository.findById(newLike.getPostId()).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
-    PostVotes pv = postVotesRepository.getByUser_Id(userId);
+    PostVotes pv = postVotesRepository.getByUser_IdAndPost_Id(userId, newLike.getPostId());
     Response res = new Response(false);
     if (pv == null) {
       pv = new PostVotes();
