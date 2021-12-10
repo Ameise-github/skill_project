@@ -16,5 +16,5 @@ public class GlobalSettings {
 
   String code;
   String name;
-  String value;
+  boolean value;
 }

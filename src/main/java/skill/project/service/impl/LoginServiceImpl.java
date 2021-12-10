@@ -1,17 +1,20 @@
 package skill.project.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import skill.project.dto.error.AnyError;
 import skill.project.dto.response.AuthResponse;
 import skill.project.dto.request.LoginRequest;
 import skill.project.dto.response.Response;
 import skill.project.dto.response.UserResponse;
 import skill.project.email.EmailService;
 import skill.project.email.Mail;
+import skill.project.exeption.AppLogicException;
 import skill.project.model.User;
 import skill.project.repository.PostRepository;
 import skill.project.repository.UserRepository;
@@ -68,14 +71,18 @@ public class LoginServiceImpl implements LoginService {
       return new Response(false);
     }
 
-    String token = UUID.randomUUID().toString();
+    String token = UUID.randomUUID().toString().replace("-", "");
     user.setCode(token);
     userRepository.save(user);
 
     //отправить письмо
     String url = host + "/login/change-password/" + token;
-    emailService.sendRestoreMessage(new Mail("blogAlex@gmail.com", user.getEmail(), "Восстановление пароля", url));
-
-    return null;
+    try {
+      emailService.sendRestoreMessage(new Mail("Alexandra-panina05@yandex.ru", user.getEmail(), "Восстановление пароля", url));
+    } catch (MailSendException ex) {
+      ex.printStackTrace();
+      throw new AppLogicException(new Response(false, new AnyError("Произошла ошибка, попробуйте позже еще раз")));
+    }
+    return new Response(true);
   }
 }

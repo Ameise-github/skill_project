@@ -95,7 +95,7 @@ databaseChangeLog:
                   type: varchar(200)
               - column:
                   name: value
-                  type: varchar(200)
+                  type: boolean
 
   - changeSet:
       id: 4

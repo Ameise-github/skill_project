@@ -23,4 +23,8 @@ public class AppLogicException extends BaseRuntimeException{
     this.data = null;
   }
 
+  public AppLogicException( Response data) {
+    this.data = data;
+  }
+
 }

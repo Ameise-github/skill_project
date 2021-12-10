@@ -18,12 +18,15 @@ spring:
     port: 587
     username: Alexandra-panina05@yandex.ru
     password: nvxjbezhltiovbth
+#    protocol: smtp
     properties:
       mail:
+        transport:
+          protocol: smtp
         smtp:
           auth: true
           starttls:
-            enable:true
+            enable: true
 
 #server:
 #  servlet:

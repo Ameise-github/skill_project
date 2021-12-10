@@ -40,18 +40,16 @@ public class GeneralServiceImpl implements GeneralService {
   @Override
   public Map<String, Boolean> settingsMap() {
     List<GlobalSettings> settings = globalSettingsRepository.findAll();
-    return settings.stream().collect(Collectors.toMap(GlobalSettings::getCode, v -> v.getValue().equals("YES")));
+    return settings.stream().collect(Collectors.toMap(GlobalSettings::getCode, GlobalSettings::isValue));
   }
 
   @Override
   public void editedSettings(Map<String, Boolean> settings) {
     //todo попробовать переделать
-    // в модели поле value седлать boolean
     // получать значение не через map, а через наименование поля
     List<GlobalSettings> settingsModel = globalSettingsRepository.findAll();
     settingsModel.forEach(s -> {
-      Boolean value = settings.get(s.getCode());
-      s.setValue(value ? "YES" : "NO");
+      s.setValue(settings.get(s.getCode()));
     });
     globalSettingsRepository.saveAll(settingsModel);
   }
@@ -104,7 +102,7 @@ public class GeneralServiceImpl implements GeneralService {
   @Override
   public StatisticResponse allStatistics(CustomUser principal) {
     GlobalSettings stPublic = globalSettingsRepository.findByCode("STATISTICS_IS_PUBLIC");
-    if (stPublic.getValue().equals("NO") && !principal.isModeration())
+    if (!stPublic.isValue() && !principal.isModeration())
       throw new AppLogicException(HttpStatus.UNAUTHORIZED);
 
     StatisticModel statistic = postRepository.getStatistic(null);
