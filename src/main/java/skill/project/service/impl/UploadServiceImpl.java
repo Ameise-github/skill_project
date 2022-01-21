@@ -3,15 +3,14 @@ package skill.project.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import skill.project.dto.error.ImgError;
 import skill.project.dto.response.Response;
 import skill.project.exeption.AppLogicException;
 import skill.project.service.UploadService;
+import skill.project.utils.Utils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -37,8 +36,7 @@ public class UploadServiceImpl implements UploadService {
           new Response(false, new ImgError("Размер файла превышает допустимый размер"))
       );
 
-    String type = image.getContentType();
-    if (!"image/jpeg".equals(type) && !"image/png".equals(type))
+    if (!Utils.uploadImage(image.getContentType()))
       throw new AppLogicException(
           HttpStatus.BAD_REQUEST,
           new Response(false, new ImgError("Неверный формат изображения"))
@@ -50,8 +48,10 @@ public class UploadServiceImpl implements UploadService {
       String ext = filename.substring(filename.lastIndexOf("."));
       Path filePath = Paths.get(uploadDir + File.separator + RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator +
           RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator +
-          RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator) ;
-      Files.createDirectories(filePath);
+          RandomStringUtils.randomAlphabetic(3).toLowerCase() + File.separator);
+      if (!Files.exists(filePath)) {
+        Files.createDirectories(filePath);
+      }
       Path copyLocation = filePath.resolve(UUID.randomUUID().toString() + ext);
       Files.copy(image.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
       res = copyLocation.toString();

@@ -74,10 +74,18 @@ public class GeneralController {
     return new ResponseEntity<>(generalService.moderationPost(principal, moderatorPost), HttpStatus.OK);
   }
 
-//  @PostMapping(value = "/profile/my") todo ???
-  @PostMapping(value = "/profile/my", consumes =  {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+  @PostMapping(value = "/profile/my", consumes =  {MediaType.APPLICATION_JSON_VALUE})
   @PreAuthorize("hasAuthority('user:write')")
-  public ResponseEntity<?> editedProfile(@UserPrincipal CustomUser principal, @RequestBody ProfileRequest profile) {
+  public ResponseEntity<?> editedProfile(@UserPrincipal CustomUser principal,
+                                         @RequestBody ProfileRequest profile) {
+    Response body = profileService.editedProfile(principal, profile);
+    return ResponseEntity.ok(body);
+  }
+
+  @PostMapping(value = "/profile/my", consumes =  {MediaType.MULTIPART_FORM_DATA_VALUE})
+  @PreAuthorize("hasAuthority('user:write')")
+  public ResponseEntity<?> editedProfileImg(@UserPrincipal CustomUser principal,
+                                         @ModelAttribute ProfileRequest profile) {
     Response body = profileService.editedProfile(principal, profile);
     return ResponseEntity.ok(body);
   }

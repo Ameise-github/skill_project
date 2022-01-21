@@ -37,4 +37,8 @@ public class Utils {
     String  doc = Jsoup.parse(text).body().text();
     return doc.length() > 150 ? doc.substring(0, 150) + "..." : doc;
   }
+
+  public static boolean uploadImage(String typeImg) {
+    return "image/jpeg".equals(typeImg) || "image/png".equals(typeImg);
+  }
 }

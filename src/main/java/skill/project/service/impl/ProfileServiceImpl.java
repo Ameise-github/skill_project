@@ -3,9 +3,9 @@ package skill.project.service.impl;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import skill.project.dto.error.RegisterError;
 import skill.project.dto.request.ProfileRequest;
 import skill.project.dto.request.RegisterRequest;
@@ -16,9 +16,13 @@ import skill.project.repository.CaptchaCodeRepository;
 import skill.project.repository.UserRepository;
 import skill.project.security.CustomUser;
 import skill.project.service.ProfileService;
+import skill.project.utils.Utils;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -79,32 +83,50 @@ public class ProfileServiceImpl implements ProfileService {
       user.setPhotoUrl(null);
       principal.setPhoto(null);
     }
-    if (!profile.isRemovePhoto() && profile.getPhoto() != null && !profile.getPhoto().isEmpty()) {
-      if (profile.getPhoto().getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
+
+    if (!profile.isRemovePhoto() && profile.getPhoto() != null) {
+      MultipartFile photoNew = (MultipartFile) profile.getPhoto();
+      if (!Utils.uploadImage(photoNew.getContentType())){
+        error.setPhoto("Неверный формат изображения");
+        return new Response(false, error);
+      }
+
+      if (photoNew.getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
         error.setPhoto("Фото слишком большое, нужно не более 5 Мб");
       } else {
         try {
-          //TODO переделать
-          Resource resource = profile.getPhoto().getResource();
-          String filename = resource.getFilename();
+          String filename = photoNew.getOriginalFilename();
           int index = filename.lastIndexOf(".");
           String ext = filename.substring(index);
-          String fileName = uploadDir + File.separator + "profile-" + UUID.randomUUID() + ext;
-          Thumbnails.of(resource.getFile())
+
+          Path path = Paths.get(uploadDir);
+          if (!Files.exists(path)) {
+            Files.createDirectories(path);
+          }
+
+          Path pathProfile = path.resolve("profile-" + UUID.randomUUID().toString().replace("-", "") + ext);
+          InputStream inputStream = photoNew.getInputStream();
+          Thumbnails.of(inputStream)
               .size(36, 36)
               .outputQuality(0.8)
-              .toFile(fileName);
-          user.setPhotoUrl(fileName);
-          principal.setPhoto(fileName);
+              .toFile(pathProfile.toString());
+
+          user.setPhotoUrl(pathProfile.toString());
+          principal.setPhoto(pathProfile.toString());
         } catch (IOException e) {
           e.printStackTrace();
-          return new Response(false);
+          error.setPhoto("Не удалось загрузить фото, попробуйте позже");
+          return new Response(false, error);
         }
       }
     }
 
-    userRepository.save(user);
-    return new Response(true);
+    if (!error.isEmpty()) {
+      return new Response(false, error);
+    } else {
+      userRepository.save(user);
+      return new Response(true);
+    }
   }
 
   @Override

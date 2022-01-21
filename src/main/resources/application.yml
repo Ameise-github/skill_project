@@ -46,9 +46,9 @@ time:
 
 upload:
   dir: src/upload
-  maxSize: 300 #считать в MBytes
+  maxSize: 10 #считать в MBytes
   profileSize: 5  #Мб
-  profileDir: src/upload/profile
+  profileDir: src/upload/avatars
 
 #logging:
 #  level:

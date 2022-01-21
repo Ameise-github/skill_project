@@ -6,12 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ProfileRequest {
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  private MultipartFile photo;
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+//  private MultipartFile photo;
+  private Object photo;
   private String name;
   private String email;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private String password;
-  @JsonInclude(JsonInclude.Include.NON_NULL)
   private boolean removePhoto;
 }
