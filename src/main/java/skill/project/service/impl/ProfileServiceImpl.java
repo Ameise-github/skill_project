@@ -147,6 +147,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     if (error.isEmpty() && error.getCode() == null) {
       user.setPassword(passwordEncoder.encode(request.getPassword()));
+      user.setCode(null);
       userRepository.save(user);
       return new Response(true);
     } else {
