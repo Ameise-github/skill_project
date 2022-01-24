@@ -38,13 +38,6 @@ public class CaptchaService {
     CaptchaCode model = new CaptchaCode(LocalDateTime.now(), token, secret);
     captchaRepository.save(model);
 
-    //очистить таблицу
-    clearCaptcha();
     return res;
-  }
-
-  //TODO выполнять раз в минуту
-  private void clearCaptcha() {
-    captchaRepository.deleteCaptcha(LocalDateTime.now().minusMinutes(timeCaptcha));
   }
 }

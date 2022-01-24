@@ -42,7 +42,7 @@ blog:
 
 time:
   captcha:
-    clear: 60  # считать в минутах
+    task: 0 0 * * * *
 
 upload:
   dir: src/upload

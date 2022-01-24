@@ -20,9 +20,6 @@ public class RegisterError implements ResponseErrors {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private String code;
 
-
-
-  //TODO проверить на изменение профиля где нет капчи
   @Override
   public boolean isEmpty() {
     return (email == null || email.isEmpty())

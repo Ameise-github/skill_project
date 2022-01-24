@@ -10,6 +10,7 @@ import skill.project.dto.error.RegisterError;
 import skill.project.dto.request.ProfileRequest;
 import skill.project.dto.request.RegisterRequest;
 import skill.project.dto.response.Response;
+import skill.project.exeption.AppLogicException;
 import skill.project.model.CaptchaCode;
 import skill.project.model.User;
 import skill.project.repository.CaptchaCodeRepository;
@@ -82,51 +83,19 @@ public class ProfileServiceImpl implements ProfileService {
     if (profile.isRemovePhoto()) {
       user.setPhotoUrl(null);
       principal.setPhoto(null);
-    }
-
-    if (!profile.isRemovePhoto() && profile.getPhoto() != null) {
-      MultipartFile photoNew = (MultipartFile) profile.getPhoto();
-      if (!Utils.uploadImage(photoNew.getContentType())){
-        error.setPhoto("Неверный формат изображения");
+    } else if (profile.getPhoto() != null) {
+      try {
+        String pathPhoto = editPhoto((MultipartFile) profile.getPhoto());
+        user.setPhotoUrl(pathPhoto);
+        principal.setPhoto(pathPhoto);
+      } catch (AppLogicException ex) {
+        error.setPhoto(ex.getMessage());
         return new Response(false, error);
       }
-
-      if (photoNew.getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
-        error.setPhoto("Фото слишком большое, нужно не более 5 Мб");
-      } else {
-        try {
-          String filename = photoNew.getOriginalFilename();
-          int index = filename.lastIndexOf(".");
-          String ext = filename.substring(index);
-
-          Path path = Paths.get(uploadDir);
-          if (!Files.exists(path)) {
-            Files.createDirectories(path);
-          }
-
-          Path pathProfile = path.resolve("profile-" + UUID.randomUUID().toString().replace("-", "") + ext);
-          InputStream inputStream = photoNew.getInputStream();
-          Thumbnails.of(inputStream)
-              .size(36, 36)
-              .outputQuality(0.8)
-              .toFile(pathProfile.toString());
-
-          user.setPhotoUrl(pathProfile.toString());
-          principal.setPhoto(pathProfile.toString());
-        } catch (IOException e) {
-          e.printStackTrace();
-          error.setPhoto("Не удалось загрузить фото, попробуйте позже");
-          return new Response(false, error);
-        }
-      }
     }
 
-    if (!error.isEmpty()) {
-      return new Response(false, error);
-    } else {
-      userRepository.save(user);
-      return new Response(true);
-    }
+    userRepository.save(user);
+    return new Response(true);
   }
 
   @Override
@@ -198,5 +167,37 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     return error;
+  }
+
+  private String editPhoto(MultipartFile photo) {
+    if (!Utils.uploadImage(photo.getContentType())) {
+      throw new AppLogicException("Неверный формат изображения");
+    }
+
+    if (photo.getSize() > (Integer.parseInt(uploadFileSize) * MBToBates)) {
+      throw new AppLogicException("Фото слишком большое, нужно не более 5 Мб");
+    } else {
+      try {
+        String filename = photo.getOriginalFilename();
+        String ext = filename.substring(filename.lastIndexOf("."));
+
+        Path path = Paths.get(uploadDir);
+        if (!Files.exists(path)) {
+          Files.createDirectories(path);
+        }
+
+        Path pathProfile = path.resolve("profile-" + UUID.randomUUID().toString().replace("-", "") + ext);
+        InputStream inputStream = photo.getInputStream();
+        Thumbnails.of(inputStream)
+            .size(36, 36)
+            .outputQuality(0.8)
+            .toFile(pathProfile.toString());
+
+        return pathProfile.toString();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new AppLogicException("Не удалось загрузить фото, попробуйте позже");
+      }
+    }
   }
 }
