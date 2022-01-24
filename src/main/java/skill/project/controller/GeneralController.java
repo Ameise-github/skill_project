@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import skill.project.dto.SettingsDto;
 import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.request.ProfileRequest;
 import skill.project.dto.response.CalendarResponse;
@@ -18,6 +17,8 @@ import skill.project.security.UserPrincipal;
 import skill.project.service.GeneralService;
 import skill.project.service.ProfileService;
 import skill.project.service.UploadService;
+
+import java.util.Map;
 
 
 /*Для запросов которые некуда пристроить :))) */
@@ -45,8 +46,8 @@ public class GeneralController {
 
   @PutMapping("/settings")
   @PreAuthorize("hasAuthority('user:moderator')")
-  public ResponseEntity<?> editedSettings(@UserPrincipal CustomUser user, @RequestBody SettingsDto settings) {
-//    generalService.editedSettings(); todo
+  public ResponseEntity<?> editedSettings(@UserPrincipal CustomUser user, @RequestBody Map<String, Boolean> settings) {
+    generalService.editedSettings(settings);
     return ResponseEntity.ok().build();
   }
 

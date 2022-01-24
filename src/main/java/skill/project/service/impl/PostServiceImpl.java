@@ -68,7 +68,6 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostDto getPostId(Integer postId, CustomUser principal) {
-    //TODO исправить возврат ошибки
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
     if (
         (post.isActive() && post.getModerationStatus().equals(ModeratorEnum.ACCEPTED) && post.getTimeCreate().isBefore(LocalDateTime.now()))

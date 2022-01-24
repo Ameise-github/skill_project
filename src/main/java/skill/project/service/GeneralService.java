@@ -1,6 +1,5 @@
 package skill.project.service;
 
-import skill.project.dto.SettingsDto;
 import skill.project.dto.request.ModeratorRequest;
 import skill.project.dto.response.CalendarResponse;
 import skill.project.dto.response.Response;

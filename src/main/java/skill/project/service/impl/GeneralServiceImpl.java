@@ -22,6 +22,7 @@ import skill.project.repository.TagRepository;
 import skill.project.security.CustomUser;
 import skill.project.service.GeneralService;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -45,8 +46,6 @@ public class GeneralServiceImpl implements GeneralService {
 
   @Override
   public void editedSettings(Map<String, Boolean> settings) {
-    //todo попробовать переделать
-    // получать значение не через map, а через наименование поля
     List<GlobalSettings> settingsModel = globalSettingsRepository.findAll();
     settingsModel.forEach(s -> {
       s.setValue(settings.get(s.getCode()));
