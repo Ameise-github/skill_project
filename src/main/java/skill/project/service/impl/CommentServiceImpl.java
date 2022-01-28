@@ -16,6 +16,7 @@ import skill.project.repository.UserRepository;
 import skill.project.service.CommentService;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
           new Response(false, new AnyError("Текст комментария не задан или слишком короткий"))
       );
     }
-    PostComments comment = new PostComments(parentCom, post, userRepository.getById(userId), LocalDateTime.now(), newComment.getText());
+    PostComments comment = new PostComments(parentCom, post, userRepository.getById(userId), LocalDateTime.now(ZoneOffset.UTC), newComment.getText());
     commentRepository.save(comment);
 
     Map<String, Integer> res = new HashMap<>();

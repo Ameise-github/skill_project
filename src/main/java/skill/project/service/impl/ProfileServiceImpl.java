@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +51,7 @@ public class ProfileServiceImpl implements ProfileService {
       return new Response(false, error);
     }
 
-    User newUser = new User(LocalDateTime.now(), registerNew.getName(), registerNew.getEmail(), passwordEncoder.encode(registerNew.getPassword()));
+    User newUser = new User(LocalDateTime.now(ZoneOffset.UTC), registerNew.getName(), registerNew.getEmail(), passwordEncoder.encode(registerNew.getPassword()));
     userRepository.save(newUser);
 
     return new Response(true);

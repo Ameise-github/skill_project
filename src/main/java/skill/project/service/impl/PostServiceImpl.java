@@ -23,6 +23,7 @@ import skill.project.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,7 @@ public class PostServiceImpl implements PostService {
   public PostDto getPostId(Integer postId, CustomUser principal) {
     Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Пост не найден", HttpStatus.NOT_FOUND));
     if (
-        (post.isActive() && post.getModerationStatus().equals(ModeratorEnum.ACCEPTED) && post.getTimeCreate().isBefore(LocalDateTime.now()))
+        (post.isActive() && post.getModerationStatus().equals(ModeratorEnum.ACCEPTED) && post.getTimeCreate().isBefore(LocalDateTime.now(ZoneOffset.UTC)))
         || (principal != null && Objects.equals(post.getUser().getId(), principal.getId()))
         || (principal != null && principal.isModeration())
     ) {
@@ -151,7 +152,7 @@ public class PostServiceImpl implements PostService {
     if (!moderator)
       postModel.setModerationStatus(ModeratorEnum.NEW);
     postModel.setTags(tagsModel);
-    postModel.setTimeCreate(dateCreate.isBefore(LocalDateTime.now()) ? LocalDateTime.now() : dateCreate);
+    postModel.setTimeCreate(dateCreate.isBefore(LocalDateTime.now(ZoneOffset.UTC)) ? LocalDateTime.now(ZoneOffset.UTC) : dateCreate);
   }
 
   private PostError validPost(PostRequest postRequest) {
@@ -172,11 +173,11 @@ public class PostServiceImpl implements PostService {
       pv = new PostVotes();
       pv.setPost(post);
       pv.setUser(userRepository.getById(userId));
-      pv.setTimeCreate(LocalDateTime.now());
+      pv.setTimeCreate(LocalDateTime.now(ZoneOffset.UTC));
       pv.setValue(newLike.getValue());
     } else if (pv.getValue() != newLike.getValue()) {
       pv.setValue(newLike.getValue());
-      pv.setTimeCreate(LocalDateTime.now());
+      pv.setTimeCreate(LocalDateTime.now(ZoneOffset.UTC));
     }else {
       return res;
     }

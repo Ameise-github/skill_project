@@ -5,10 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 
 public class Utils {
 
@@ -25,7 +22,6 @@ public class Utils {
   }
 
   public static long getTimestamp(LocalDateTime dateTime) {
-    //TODO проверить правильность перевода
     return dateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
   }
 

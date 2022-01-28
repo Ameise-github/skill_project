@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import skill.project.repository.CaptchaCodeRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,6 @@ public class CaptchaTask {
 
   @Scheduled(cron = "${time.captcha.task}")
   public void clearCaptcha() {
-    captchaRepository.deleteCaptcha(LocalDateTime.now());
+    captchaRepository.deleteCaptcha(LocalDateTime.now(ZoneOffset.UTC));
   }
 }

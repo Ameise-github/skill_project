@@ -14,6 +14,7 @@ import skill.project.repository.CaptchaCodeRepository;
 
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Random;
 import java.util.UUID;
@@ -22,8 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CaptchaService {
   private final CaptchaCodeRepository captchaRepository;
-  @Value("${time.captcha.clear}")
-  long timeCaptcha;
 
   public CaptchaResponse generateCaptcha() {
     CaptchaResponse res = new CaptchaResponse();
@@ -35,7 +34,7 @@ public class CaptchaService {
     String s = Base64.getEncoder().encodeToString(cage.draw(token));
     res.setImage("data:image/png;base64, " + s);
     res.setSecret(secret);
-    CaptchaCode model = new CaptchaCode(LocalDateTime.now(), token, secret);
+    CaptchaCode model = new CaptchaCode(LocalDateTime.now(ZoneOffset.UTC), token, secret);
     captchaRepository.save(model);
 
     return res;

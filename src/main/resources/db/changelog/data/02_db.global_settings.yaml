@@ -16,7 +16,7 @@ databaseChangeLog:
                   value: "Многопользовательский режим"
               - column:
                   name: value
-                  value: "true"
+                  valueBoolean: true
         - insert:
             tableName: global_settings
             columns:
@@ -28,7 +28,7 @@ databaseChangeLog:
                   value: "Премодерация постов"
               - column:
                   name: value
-                  value: "false"
+                  valueBoolean: true
         - insert:
             tableName: global_settings
             columns:
@@ -40,7 +40,7 @@ databaseChangeLog:
                   value: "Показывать всем статистику блога"
               - column:
                   name: value
-                  value: "false"
+                  valueBoolean: false
       rollback:
         - delete:
             tableName: global_settings
