@@ -44,7 +44,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
       "FROM posts p\n" +
       "WHERE p.is_active = true\n" +
       "  AND p.moderation_status = 'ACCEPTED'\n" +
-      "  AND p.time <= current_date\n" +
+      "  AND cast(p.time as date) <= current_date\n" +
       "  and extract(YEAR from p.time) = ?1\n" +
       "group by cast(p.time as date)\n" +
       "order by extract(YEAR from p.time)", nativeQuery = true)
